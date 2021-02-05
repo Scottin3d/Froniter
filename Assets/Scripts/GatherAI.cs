@@ -12,9 +12,11 @@ public class GatherAI : MonoBehaviour {
 
     public event Action<bool, float> OnWorking;
     public event Action OnGatheringComplete;
+    public event Action<int> OnInventoryChange; // to canvas handler
+    public event Action<ResourceType, int> OnInventoryDrop; // to inventory handler
 
-    [SerializeField]
-    private GameHandler gameHandler;
+
+    [SerializeField] private GameHandler gameHandler;
 
     private enum State {
         Idle,
@@ -128,7 +130,9 @@ public class GatherAI : MonoBehaviour {
             case State.MovingToTarget:
                 if (distance == 1f) {
                     state = State.Idle;
+                    OnInventoryDrop?.Invoke(ResourceType.Wood, inventory);
                     inventory = 0;
+                    OnInventoryChange?.Invoke(inventory);
                     Debug.Log("Dropping off Inventory");
                     workTime += 0.5f;
                     Debug.Log("Workign speed increasded to: " + workTime);
@@ -137,14 +141,15 @@ public class GatherAI : MonoBehaviour {
         }
     }
 
-    private void Handle_ResourceScriptOnGatherComplete(bool b) {
+    private void Resource_HandleOnGatherComplete(bool b) {
         Debug.Log("Gathering is complete");
         isGatherComplete = b;
     }
 
-    private void Handle_ResourceScriptOnGather(int c) {
+    private void Resource_HandleOnGather(int c) {
         Debug.Log(c + " added to player inventory.");
         inventory += c;
+        OnInventoryChange?.Invoke(inventory);
     }
 
     private void GetWorkingNode() {
@@ -155,8 +160,8 @@ public class GatherAI : MonoBehaviour {
 
         currentResouce = gatherNode.GetComponent<Resource>();
         currentResouce.Initialized(this);
-        currentResouce.OnGather += Handle_ResourceScriptOnGather;
-        currentResouce.OnGatherComplete += Handle_ResourceScriptOnGatherComplete;
+        currentResouce.OnGather += Resource_HandleOnGather;
+        currentResouce.OnGatherComplete += Resource_HandleOnGatherComplete;
     }
 
     private void MoveToTarget() {

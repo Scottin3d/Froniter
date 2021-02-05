@@ -11,7 +11,8 @@ public class GameHandler : MonoBehaviour {
     [SerializeField] private Transform gatherNodeTransform = null;
     [SerializeField] private Transform targetNodeTransform = null;
 
-    [SerializeField] private gatherNodeScript gatherNodeScript = null;
+    
+    private gatherNodeScript gatherNodeScript = null;
 
     // Start is called before the first frame update
     void Awake() {
