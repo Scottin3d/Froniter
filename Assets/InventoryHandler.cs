@@ -31,4 +31,8 @@ public class InventoryHandler : MonoBehaviour {
         Debug.Log(mType + " count: " + mInventory);
         OnInventoryChange?.Invoke(mType, count);
     }
+
+    public Dictionary<ResourceType, int> GetResources() {
+        return storageInventory;
+    }
 }
