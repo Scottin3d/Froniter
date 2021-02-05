@@ -15,6 +15,6 @@ I had a few goals in mind when I started this scene:
 
 Below is a video of the AI going through the different states. The green lines are the AI’s path to its destination and the white boxes are just NavMesh obstacles. After all the resources are collected, it will return home and wait for a new job to appear. I made a hot key that spawns new resources to get collected to test the event system that I used for the jobs.  
 
-![Video of AI](https://i.imgur.com/y2KFGVv.gifv)  
+![Video of AI](https://i.imgur.com/y2KFGVv.gif)  
 
 The AI will broadcast an event that it has reached its destination. This signals the resource node that it is now workable. There are two phases to working a resource. The first is preparing it, like chopping down a tree. The second is gather the resource. All of these actions are controlled in the resource as long as the AI is working it. If the AI’s inventory is filled before the resource is complete, it will broadcast the working event again with the appropriate bool. Once the resource is depleted, it will broadcast a completion event that the AI subscribes to when it is assigned the node.  
