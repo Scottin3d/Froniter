@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ResourceIconBarHandler : MonoBehaviour {
     [SerializeField] private GameObject resourceIconPrefab = null;
-    [SerializeField] private InventoryHandler inventoryHandler = null;
+    //[SerializeField] private InventoryHandler inventoryHandler = null;
 
     private int maxNumIcons = 6;
     private GameObject[] visibleIcons;
@@ -14,10 +14,10 @@ public class ResourceIconBarHandler : MonoBehaviour {
     void Awake() {
         // set handlers
         resourceIconPrefab = (resourceIconPrefab) ? resourceIconPrefab : Resources.Load<GameObject>("UI/Prefabs/InventoryIconPrefab");
-        inventoryHandler = (inventoryHandler) ? inventoryHandler : GameObject.Find("InventoryHandler").GetComponent<InventoryHandler>();
+        //inventoryHandler = (inventoryHandler) ? inventoryHandler : GameObject.Find("InventoryHandler").GetComponent<InventoryHandler>();
 
         // subscribe to events
-        inventoryHandler.OnInventoryChange += InventoryHandler_HandleOnInventoryChange;
+
 
         // init containers
         resourceIcons = new Dictionary<ResourceType, int>();
@@ -25,20 +25,21 @@ public class ResourceIconBarHandler : MonoBehaviour {
     }
 
     private void Start() {
+        InventoryHandler.current.OnInventoryChange += InventoryHandler_HandleOnInventoryChange;
         ShowIcons();
     }
 
     private void ShowIcons() {
-        resourceIcons = inventoryHandler.GetResources();
-
-        for (int i = 0; i < maxNumIcons; i++) {
+        resourceIcons = InventoryHandler.current.GetResources();
+        int s = (resourceIcons.Count > maxNumIcons) ? maxNumIcons : resourceIcons.Count;
+        for (int i = 0; i < s; i++) {
             GameObject iconClone = Instantiate<GameObject>(resourceIconPrefab, transform);
             visibleIcons[i] = iconClone;
         }
     }
 
     private void InventoryHandler_HandleOnInventoryChange(ResourceType mType, int mInventoy) {
-        throw new NotImplementedException();
+        ShowIcons();
     }
 
     // Update is called once per frame
