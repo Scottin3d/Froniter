@@ -9,7 +9,7 @@ public class InventoryHandler : MonoBehaviour {
     // event actions
     public event Action<ResourceType, int> OnInventoryChange;
     // handlers
-    [SerializeField] GatherAI agent = null;
+    [SerializeField] Agent agent = null;
 
     // containers
     public Dictionary<ResourceType, int> storageInventory;
@@ -18,11 +18,17 @@ public class InventoryHandler : MonoBehaviour {
     void Awake() {
         current = this;
         storageInventory = new Dictionary<ResourceType, int>();
-        agent = (agent) ? agent : GameObject.Find("Agent").GetComponent<GatherAI>();
+
+        //agent = (agent) ? agent : GameObject.Find("Agent").GetComponent<Agent>();
         
     }
     private void Start() {
-        agent.OnInventoryDrop += Agent_HandleOnIventoryDrop;
+        AgentHandler.current.OnAgentCreation += AgentHandler_HandleOnAgentCreation;
+        //agent.OnInventoryDrop += Agent_HandleOnIventoryDrop;
+    }
+
+    private void AgentHandler_HandleOnAgentCreation(Agent mAgent) {
+        mAgent.OnInventoryDrop += Agent_HandleOnIventoryDrop;
     }
 
     private void Agent_HandleOnIventoryDrop(ResourceType mType, int mInventory) {

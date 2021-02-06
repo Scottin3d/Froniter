@@ -5,6 +5,7 @@ using UnityEngine;
 using System;
 
 public enum ResourceType {
+    Default,
     Wood,
     Stone,
 }
@@ -18,7 +19,7 @@ public class ResourceHandler : MonoBehaviour {
     // containers
     [SerializeField] Transform inGameResources = null;
     Dictionary<ResourceType, Queue<Resource>> resourcesByType = new Dictionary<ResourceType, Queue<Resource>>();
-
+    Dictionary<ResourceType, GameObject> deadResources = new Dictionary<ResourceType, GameObject>();
     public GameObject prefab;
     public float radius = 10;
     public int numPrefabs = 10;
@@ -63,13 +64,41 @@ public class ResourceHandler : MonoBehaviour {
         for (int i = 0; i < numPrefabs; i++) {
             float randX = UnityEngine.Random.Range(-radius, radius);
             float randZ = UnityEngine.Random.Range(-radius, radius);
-            GameObject prefabClone = Instantiate<GameObject>(prefab, new Vector3((parentPos.x - randX), parentPos.y, (parentPos.z - randZ)), Quaternion.identity, inGameResources);
-            Resource cloneResource = prefabClone.GetComponent<Resource>();
-            prefabClone.transform.localScale = Vector3.one * UnityEngine.Random.Range(0.5f, 2);
-            prefabClone.name = "resourceNode: " + cloneResource.resourceType + i;
-            AddResource(cloneResource);
+            Vector3 spawnPos = new Vector3((parentPos.x - randX), 0, (parentPos.z - randZ));
+            Debug.Log("Spawn Position: " + spawnPos);
+            
+            // adjust y
+            Vector3 rayPos = new Vector3(spawnPos.x, 100f, spawnPos.z);
+            Ray ray = new Ray(rayPos, Vector3.down);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit)) {
+                if (hit.collider.CompareTag("ground")) {
+                    Debug.Log(hit.collider.tag + " Hit Position: " + hit.point);
+                    spawnPos.y = hit.point.y;
+
+                    GameObject prefabClone = Instantiate<GameObject>(prefab, spawnPos, Quaternion.identity);
+                    //prefabClone.transform.position = spawnPos;
+
+                    Resource cloneResource = prefabClone.GetComponent<Resource>();
+                    cloneResource.resourceType = ResourceType.Wood;
+                    cloneResource.OnResourceDestroyed += Resource_HandleOnResourceDestroy;
+                    prefabClone.transform.localScale = Vector3.one * UnityEngine.Random.Range(0.5f, 2);
+                    prefabClone.name = "resourceNode: " + cloneResource.resourceType + i;
+
+
+                    AddResource(cloneResource);
+                    OnJobsAvailable?.Invoke(true);
+                }
+
+            }
+            Debug.DrawLine(rayPos, hit.point, Color.white, 1000f);
+            
         }
-        OnJobsAvailable?.Invoke(true);
+        
+    }
+
+    private void Resource_HandleOnResourceDestroy(GameObject mResourceType, Transform mTransform) {
+        GameObject deadResource = Instantiate<GameObject>(mResourceType, mTransform.position, mTransform.rotation, inGameResources);
     }
 
     public Transform GetResourceTransform(JobType mType) {
@@ -90,7 +119,7 @@ public class ResourceHandler : MonoBehaviour {
             // check queue
             if (resourcesByType[mType].Count == 0) {
                 node = null;
-            } else { 
+            } else {
                 node = resourcesByType[mType].Dequeue().transform;
             }
         } else {

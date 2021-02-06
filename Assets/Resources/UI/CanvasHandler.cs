@@ -7,7 +7,7 @@ using System;
 public class CanvasHandler : MonoBehaviour {
     public static CanvasHandler instance;
 
-    [SerializeField] GatherAI agent = null;
+    [SerializeField] Agent agent = null;
     [SerializeField] InventoryHandler inventoryHandler = null;
 
     [SerializeField] TextMeshProUGUI playerInventory = null;
@@ -24,12 +24,17 @@ public class CanvasHandler : MonoBehaviour {
         Debug.Assert(storageInventory != null);
         Debug.Assert(storageInventoryCC != null);
 
-        agent = (agent) ? agent : GameObject.Find("Agent").GetComponent<GatherAI>();
-        agent.OnInventoryChange += Agent_HandleOnInventoryChange;
+        AgentHandler.current.OnAgentCreation += AgentHandler_HandleOnAgentCreation;
+        //agent = (agent) ? agent : GameObject.Find("Agent").GetComponent<Agent>();
+        //agent.OnInventoryChange += Agent_HandleOnInventoryChange;
 
         inventoryHandler = (inventoryHandler) ? inventoryHandler : GameObject.Find("InventoryHandler").GetComponent<InventoryHandler>();
         InventoryHandler.current.OnInventoryChange += InventoryHandler_HandleOnInventoryChange;
         //inventoryHandler.OnInventoryChange += InventoryHandler_HandleOnInventoryChange;
+    }
+
+    private void AgentHandler_HandleOnAgentCreation(Agent mAgent) {
+        mAgent.OnInventoryChange += Agent_HandleOnInventoryChange;
     }
 
     private void InventoryHandler_HandleOnInventoryChange(ResourceType mType, int mInventory) {

@@ -7,11 +7,12 @@ public enum JobType {
     Lumberjack,
 }
 
-[CreateAssetMenu(fileName = "New Job Object", menuName = "Inventory System/")]
+[CreateAssetMenu(fileName = "New Job Object", menuName = "Job System/Create Job")]
 public class JobObject : ScriptableObject
 {
     public JobType jobType;
-    public WorkPlaceType workPlaceType;
+    public ResourceType[] jobResources;
+    public WorkPlaceType jobWorkplace;
     [TextArea(10, 15)]
     public string jobDescription;
     public Sprite jobUIicon;

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4661435515760519716}
   - component: {fileID: 7066901430696497906}
   - component: {fileID: 1459868894914331960}
+  - component: {fileID: 8461146502305421159}
   m_Layer: 0
   m_Name: Tree_02
   m_TagString: Untagged
@@ -109,10 +110,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 995e2f8169b1d594c994987d4b5898b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  resourceType: 0
   resourceCount: 3
   gatherInterval: 2
   timeToPrep: 3
+  deadPrefab: {fileID: 4766159044075265432, guid: 32143005600a5fd4e9c1ac4fbf81b953, type: 3}
   agent: {fileID: 0}
   gather: 0
   isGatherComplete: 0
   working: 0
+--- !u!208 &8461146502305421159
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4661435515762455780}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.21, y: 2.1090002, z: 0.21}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: -0.018000001, y: 2.092, z: -0.004}
+  m_TimeToStationary: 0.5

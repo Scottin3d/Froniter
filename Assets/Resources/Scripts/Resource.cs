@@ -10,6 +10,7 @@ public class Resource : MonoBehaviour {
      */
     public event Action<int> OnGather;
     public event Action<bool> OnGatherComplete;
+    public event Action<GameObject, Transform> OnResourceDestroyed;
 
     /* Resource Properties
      */
@@ -17,16 +18,17 @@ public class Resource : MonoBehaviour {
     public float resourceCount = 10;
     public float gatherInterval = 2f;
     public float timeToPrep = 5f;
+    public GameObject deadPrefab;
 
     /* Agent Information
      */
-    [SerializeField] GatherAI agent;
+    [SerializeField] Agent agent;
     private float gatherSpeedMultiplier = 1;
     public bool gather = false;
     public bool isGatherComplete = false;
     public bool working = false;
 
-    public void Initialized(GatherAI script) {
+    public void Initialized(Agent script) {
         agent = script;
         agent.OnGatheringComplete += HandleResourceDestroy;
         agent.OnWorking += HandleOnWorking;
@@ -70,6 +72,7 @@ public class Resource : MonoBehaviour {
     }
 
     public void HandleResourceDestroy() {
+        OnResourceDestroyed?.Invoke(deadPrefab, transform);
         agent.OnWorking -= HandleOnWorking;
         agent.OnGatheringComplete -= HandleResourceDestroy;
         // Debug.Log("Resource complete: " + transform.name);

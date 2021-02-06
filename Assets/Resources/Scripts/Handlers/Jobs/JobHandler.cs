@@ -2,23 +2,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum WorkPlaceType { 
+public enum WorkPlaceType {
+    Default,
     Storage,
 }
 
-public class WorkHandler : MonoBehaviour {
-    // instance
-    public static WorkHandler current;
 
+public class JobHandler : MonoBehaviour {
+    // instance
+    public static JobHandler current;
     // containers
+    [SerializeField] public Object[] jobs;
     [SerializeField] Transform inGameWorkPlaces = null;
     Dictionary<WorkPlaceType, List<WorkPlace>> workPlaces = new Dictionary<WorkPlaceType, List<WorkPlace>>();
     void Awake() {
         current = this;
         Debug.Assert(inGameWorkPlaces != null, "Please assign workplaces in editor!");
 
+        LoadJobs();
         // initialize work places
         InitInGameWorkPlaces();
+
     }
 
     private void InitInGameWorkPlaces() {
@@ -33,6 +37,10 @@ public class WorkHandler : MonoBehaviour {
 
             
         }
+    }
+
+    private void LoadJobs() {
+        jobs = Resources.LoadAll("ScriptableObjects/JobSystem", typeof(JobObject));
     }
 
     public Transform GetTargetTransform(WorkPlaceType mType) {

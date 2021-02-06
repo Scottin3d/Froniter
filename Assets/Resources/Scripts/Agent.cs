@@ -5,25 +5,14 @@ using UnityEngine;
 using UnityEngine.AI;
 
 
-public struct Job {
-    public string jobTitle;
-    public WorkPlaceType workPlaceType;
-    public ResourceType resourceType;
-}
-
 public enum Jobs { 
     Default,
     woodcutter,
 }
 
-public class GatherAI : MonoBehaviour {
-    private enum State {
-        Idle,
-        Rest,
-        MovingToGatherNode,
-        Gathering,
-        MovingToTarget,
-    }
+public class Agent : MonoBehaviour {
+
+
     // event actions
     public event Action<bool, float> OnWorking;
     public event Action OnGatheringComplete;
@@ -37,13 +26,15 @@ public class GatherAI : MonoBehaviour {
     //[SerializeField] private GameHandler gameHandler;
     [SerializeField] InventoryObject AgentInventory;
 
-    [SerializeField] private State state;
+    [SerializeField] private AgentState state;
     private int inventory;
     private int inventoryLimit = 4;
 
     // path finding
+    public float agentStoppingDistance = 1f;
     [SerializeField] private float distance;
-    [SerializeField] private State lastState;
+    public bool atDestination = false;
+    [SerializeField] private AgentState lastState;
     [SerializeField] private Vector3 lastDestination;
     [SerializeField] private Transform jobNode = null;
     [SerializeField] private Resource currentResouce = null;
@@ -54,11 +45,10 @@ public class GatherAI : MonoBehaviour {
     public Vector3[] pathPoints;
 
     // working
+    [SerializeField] JobObject agentJob;
     [SerializeField] WorkPlaceType workerType;
     [SerializeField] JobType jobType;
 
-    [SerializeField] float idleTime = 2f;
-    private float gatherTime = 5f;
     private bool isGather = false;
     private bool isGatherComplete = false;
     private float workTime = 1f;
@@ -67,16 +57,23 @@ public class GatherAI : MonoBehaviour {
     private float rechargeRate = 0.05f;
     
 
+    
+
     private void Awake() {
         //Debug.Assert(gameHandler != null, "Please set Game Handler");
         agent = GetComponent<NavMeshAgent>();
-        state = State.Idle;
+        state = AgentState.Idle;
+    }
+
+    public void InitializeAgent(JobObject mJob) {
+        agentJob = mJob;
     }
 
     private void Update() {
+        agent.stoppingDistance = agentStoppingDistance;
         distance = Vector3.Distance(agent.transform.position, agent.destination);
 
-        if (state != State.Idle) {
+        if (state != AgentState.Idle) {
             energy -= Time.deltaTime;
         }
 
@@ -89,14 +86,17 @@ public class GatherAI : MonoBehaviour {
 
     private void CheckState() {
         switch (state) {
-            case State.Idle:
+            case AgentState.Idle:
                 // go to job
                 if (energy <= 20f) {
                     // rest
                     lastState = state;
-                    state = State.Rest;
+                    state = AgentState.Rest;
                     lastDestination = agent.destination;
-                    agent.SetDestination(homeNode.position);
+
+                    // go home
+                    GoHome();
+                    
 
                     //
                 } else if (jobNode) {
@@ -110,12 +110,14 @@ public class GatherAI : MonoBehaviour {
 
                     } else {
                         MoveToTarget();
-                        agent.SetDestination(homeNode.position);
+                        // go home
+                        GoHome();
                     }
                 }
                 break;
-            case State.Rest:
-                if (distance == 1f) {
+            case AgentState.Rest:
+                atDestination = pathComplete();
+                if (atDestination) {
                     if (energy <= 60f) {
                         // rest
                         energy += rechargeRate;
@@ -125,27 +127,28 @@ public class GatherAI : MonoBehaviour {
                     }
                 }
                 break;
-            case State.MovingToGatherNode:
-
-                if (distance == 1f) {
-                    state = State.Gathering;
+            case AgentState.MovingToGatherNode:
+                atDestination = pathComplete();
+                if (atDestination) {
+                    state = AgentState.Gathering;
                     isGather = true;
                 }
                 break;
-            case State.Gathering:
+            case AgentState.Gathering:
                 // gather
                 if (IsInventoryFull()) {
                     OnWorking?.Invoke(false, workTime);
-                    state = State.MovingToTarget;
+                    state = AgentState.MovingToTarget;
                     MoveToTarget();
                 } else {
                     Gather();
                 }
 
                 break;
-            case State.MovingToTarget:
-                if (distance == 1f) {
-                    state = State.Idle;
+            case AgentState.MovingToTarget:
+                atDestination = pathComplete();
+                if (atDestination) {
+                    state = AgentState.Idle;
                     OnInventoryDrop?.Invoke(ResourceType.Wood, inventory);
                     inventory = 0;
                     OnInventoryChange?.Invoke(inventory);
@@ -157,6 +160,26 @@ public class GatherAI : MonoBehaviour {
         }
     }
 
+    private void GoHome() {
+        if (homeNode) {
+            agent.SetDestination(homeNode.position);
+        } else {
+            agent.SetDestination(AgentHandler.current.transform.position);
+        }
+    }
+
+    // https://answers.unity.com/questions/324589/how-can-i-tell-when-a-navmesh-has-reached-its-dest.html
+    private bool pathComplete() {
+        if (Vector3.Distance(agent.destination, agent.transform.position) <= agent.stoppingDistance *3f) {
+                return true;
+            if (!agent.hasPath || agent.velocity.sqrMagnitude == 0f) {
+            }
+        }
+
+        return false;
+    }
+
+    #region Event Handles
     private void Resource_HandleOnGatherComplete(bool b) {
         // Debug.Log("Gathering is complete");
         isGatherComplete = b;
@@ -168,8 +191,9 @@ public class GatherAI : MonoBehaviour {
         OnInventoryChange?.Invoke(inventory);
     }
 
+    #endregion
     private void GetWorkingNode() {
-        state = State.MovingToGatherNode;
+        state = AgentState.MovingToGatherNode;
         Vector3 gatherPosition = jobNode.position;
         agent.SetDestination(gatherPosition);
         Debug.Log("Heading to node: " + jobNode.name);
@@ -195,7 +219,7 @@ public class GatherAI : MonoBehaviour {
             isGatherComplete = false;
 
             if (IsInventoryFull()) {
-                state = State.MovingToTarget;
+                state = AgentState.MovingToTarget;
                 MoveToTarget();
             } else {
                 jobNode = GameHandler.current.GetNode(jobType);
@@ -203,14 +227,14 @@ public class GatherAI : MonoBehaviour {
                 if (jobNode) {
                     GetWorkingNode();
                 } else {
-                    state = State.Idle;
+                    state = AgentState.Idle;
                 }
             }
         }
     }
 
     public bool IsIdle() {
-        return state == State.Idle;
+        return state == AgentState.Idle;
     }
 
     private bool IsInventoryFull() {

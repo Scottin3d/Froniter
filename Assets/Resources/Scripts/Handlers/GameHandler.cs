@@ -34,6 +34,6 @@ public class GameHandler : MonoBehaviour {
     }
 
     public Transform GetTarget(WorkPlaceType mType) {
-        return WorkHandler.current.GetTargetTransform(mType);
+        return JobHandler.current.GetTargetTransform(mType);
     }
 }
