@@ -21,7 +21,7 @@ public class ResourceHandler : MonoBehaviour {
     Dictionary<ResourceType, Queue<Resource>> resourcesByType = new Dictionary<ResourceType, Queue<Resource>>();
     Dictionary<ResourceType, GameObject> deadResources = new Dictionary<ResourceType, GameObject>();
 
-    public GameObject prefab;
+    public List<GameObject> prefabs = new List<GameObject>();
     public float radius = 10;
     public int numPrefabs = 10;
 
@@ -51,16 +51,19 @@ public class ResourceHandler : MonoBehaviour {
     }
 
     void Start() {
-        Debug.Assert(prefab != null);
+        Debug.Assert(prefabs != null);
     }
 
     private void Update() {
         if (Input.GetKeyDown(KeyCode.T)) {
-            SpawnNodes();
+            SpawnNodes(0);
+        }
+        if (Input.GetKeyDown(KeyCode.R)) {
+            SpawnNodes(1);
         }
     }
 
-    private void SpawnNodes() {
+    private void SpawnNodes(int prefabIdnex = 0) {
         Vector3 parentPos = transform.position;
         for (int i = 0; i < numPrefabs; i++) {
             float randX = UnityEngine.Random.Range(-radius, radius);
@@ -74,14 +77,14 @@ public class ResourceHandler : MonoBehaviour {
             if (Physics.Raycast(ray, out hit)) {
                 if (hit.collider.CompareTag("ground")) {
                     spawnPos.y = hit.point.y;
-                    GameObject prefabClone = Instantiate<GameObject>(prefab, spawnPos, Quaternion.identity);
+                    GameObject prefabClone = Instantiate<GameObject>(prefabs[prefabIdnex], spawnPos, Quaternion.identity, inGameResources);
                     //prefabClone.transform.position = spawnPos;
 
                     Resource cloneResource = prefabClone.GetComponent<Resource>();
-                    cloneResource.resourceType = ResourceType.Wood;
+                    //cloneResource.resourceType = ResourceType.Wood;
                     cloneResource.OnResourceDestroyed += Resource_HandleOnResourceDestroy;
                     prefabClone.transform.localScale = Vector3.one * UnityEngine.Random.Range(0.5f, 2);
-                    prefabClone.name = "resourceNode: " + cloneResource.resourceType + i;
+                    prefabClone.name = "resourceNode: " + cloneResource.resourceType + inGameResources.transform.childCount;
 
                     // add to resource dictionary
                     AddResource(cloneResource);

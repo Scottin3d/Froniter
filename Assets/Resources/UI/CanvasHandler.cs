@@ -37,12 +37,12 @@ public class CanvasHandler : MonoBehaviour {
         mAgent.OnInventoryChange += Agent_HandleOnInventoryChange;
     }
 
-    private void InventoryHandler_HandleOnInventoryChange(string mID, ItemObject mItemObject) {
+    private void InventoryHandler_HandleOnInventoryChange(string mID, InventorySlot mslot) {
         
         switch (mID) {
             case "log":
                 //Debug.Log(this + " :Adding " + mInventory + " to " + mType);
-                storageInventory.text = mItemObject.itemCount.ToString();
+                storageInventory.text = mslot.GetItemCount().ToString();
                 storageInventoryCC.text = storageInventory.text;
                 break;
             default:

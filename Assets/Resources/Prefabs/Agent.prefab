@@ -133,8 +133,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0aac9ee600b02ef4baddaae31015c273, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AgentInventory: {fileID: 0}
+  agentInventory: {fileID: 0}
   state: 0
+  workingInventorySlot: {fileID: 0}
   agentStoppingDistance: 1
   distance: 0
   atDestination: 0
@@ -145,8 +146,11 @@ MonoBehaviour:
   targetNode: {fileID: 0}
   homeNode: {fileID: 0}
   pathPoints: []
+  workingInventory: 0
+  currentInventory: 0
+  currentInventoryCap: 0
   agentJob: {fileID: 0}
-  energy: 60
+  energy: 120
 --- !u!54 &1448239994058104551
 Rigidbody:
   m_ObjectHideFlags: 0

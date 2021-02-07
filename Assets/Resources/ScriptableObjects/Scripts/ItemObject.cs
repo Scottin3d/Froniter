@@ -10,6 +10,8 @@ public enum ItemType {
 }
 
 public abstract class ItemObject : ScriptableObject {
+    //public ItemObject(string mID, int mCount) { itemID = mID; itemCount = mCount; }
+
     public GameObject itemPrefab;
     public string itemID;
     public ItemType itemType;

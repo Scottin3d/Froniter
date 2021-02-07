@@ -6,6 +6,7 @@ public enum JobType {
     Default,
     Lumberjack,
     Gatherer,
+    Stonecutter
 
 }
 

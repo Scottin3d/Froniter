@@ -6,7 +6,7 @@ using TMPro;
 using System;
 
 public class InventoryUIIcon : MonoBehaviour {
-    [SerializeField] ResourceObject itemObject;
+    [SerializeField] ItemObject itemObject;
     [SerializeField] TextMeshProUGUI label = null;
     [SerializeField] TextMeshProUGUI labelCC = null;
     public Color CCcolor;
@@ -29,11 +29,11 @@ public class InventoryUIIcon : MonoBehaviour {
         InventoryHandler.current.OnInventoryChange += InventoryHandler_HandleOnInventoryChange;
     }
 
-    private void InventoryHandler_HandleOnInventoryChange(string mID, ItemObject mItemObject) {
+    private void InventoryHandler_HandleOnInventoryChange(string mID, InventorySlot mSlot) {
         switch (mID) {
             case "wood":
                 //Debug.Log(this + " :Adding " + mInventory + " to " + mType);
-                labelCC.text = mItemObject.itemCount.ToString();
+                labelCC.text = mSlot.GetItemCount().ToString();
                 labelCC.text = label.text;
                 break;
             default:

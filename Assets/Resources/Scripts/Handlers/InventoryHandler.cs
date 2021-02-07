@@ -7,15 +7,15 @@ public class InventoryHandler : MonoBehaviour {
     // instance
     public static InventoryHandler current;
     // event actions
-    public event Action<string, ItemObject> OnInventoryChange;
+    public event Action<string, InventorySlot> OnInventoryChange;
     // handlers
     [SerializeField] Agent agent = null;
 
     // containers
     public Dictionary<ResourceType, int> storageInventory;
-    public Dictionary<string, ItemObject> inventory = new Dictionary<string, ItemObject>();
+    public Dictionary<string, InventorySlot> inventory = new Dictionary<string, InventorySlot>();
 
-
+    private Dictionary<Agent, InventoryObject> agentInventories = new Dictionary<Agent, InventoryObject>();
 
     void Awake() {
         current = this;
@@ -33,18 +33,27 @@ public class InventoryHandler : MonoBehaviour {
         mAgent.OnInventoryDrop += Agent_HandleOnIventoryDrop;
     }
 
-    private void Agent_HandleOnIventoryDrop(string mID, ItemObject mItemObject) {
+    private void Agent_HandleOnIventoryDrop(string mID, InventorySlot mSlot) {
         if (inventory.ContainsKey(mID)) {
-            inventory[mID].itemCount += mItemObject.itemCount;
+            inventory[mID].AddItemCount(mSlot.GetItemCount());
+            
         } else {
-            inventory.Add(mItemObject.itemID, mItemObject);
+            InventorySlot add = new InventorySlot(mSlot);
+            inventory.Add(mID, add);
         }
-
+        OnInventoryChange?.Invoke(mID, inventory[mID]);
         //Debug.Log(mType + " count: " + mInventory);
-        OnInventoryChange?.Invoke(mID, mItemObject);
     }
 
     public Dictionary<ResourceType, int> GetResources() {
         return storageInventory;
+    }
+
+    public void AddAgentInventory(Agent mAgent, InventoryObject mAgentInventory) {
+        if (!agentInventories.ContainsKey(mAgent)) {
+            agentInventories.Add(mAgent, mAgentInventory);
+        } else {
+            Debug.Log(mAgent + " inventory already stored");
+        }
     }
 }

@@ -16,7 +16,7 @@ public class UIResourceDisplay : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
-        count.text = "";
+        //count.text = "";
         displayIcon.sprite = icon;
     }
 
