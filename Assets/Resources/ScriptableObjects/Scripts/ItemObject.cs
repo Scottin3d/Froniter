@@ -11,12 +11,11 @@ public enum ItemType {
 
 public abstract class ItemObject : ScriptableObject {
     public GameObject itemPrefab;
+    public string itemID;
     public ItemType itemType;
     [TextArea(10,15)]
     public string itemDescription;
     public Sprite itemUIicon;
     public Color itemUIiconColor = Color.white;
-    private int itemCount = 0;
-
-    
+    public int itemCount = 0;
 }

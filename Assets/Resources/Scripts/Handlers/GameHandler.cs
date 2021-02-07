@@ -9,7 +9,7 @@ public class GameHandler : MonoBehaviour {
     public static GameHandler current;
     public bool jobAvailable = false;
 
-    // Start is called before the first frame update
+
     private void Awake() {
         current = this;
     }

@@ -29,14 +29,12 @@ public class InventoryUIIcon : MonoBehaviour {
         InventoryHandler.current.OnInventoryChange += InventoryHandler_HandleOnInventoryChange;
     }
 
-    private void InventoryHandler_HandleOnInventoryChange(ResourceType mType, int mCount) {
-        switch (mType) {
-            case ResourceType.Wood:
+    private void InventoryHandler_HandleOnInventoryChange(string mID, ItemObject mItemObject) {
+        switch (mID) {
+            case "wood":
                 //Debug.Log(this + " :Adding " + mInventory + " to " + mType);
-                labelCC.text = mCount.ToString();
+                labelCC.text = mItemObject.itemCount.ToString();
                 labelCC.text = label.text;
-                break;
-            case ResourceType.Stone:
                 break;
             default:
                 break;

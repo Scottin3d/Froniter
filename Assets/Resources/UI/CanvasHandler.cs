@@ -37,15 +37,13 @@ public class CanvasHandler : MonoBehaviour {
         mAgent.OnInventoryChange += Agent_HandleOnInventoryChange;
     }
 
-    private void InventoryHandler_HandleOnInventoryChange(ResourceType mType, int mInventory) {
+    private void InventoryHandler_HandleOnInventoryChange(string mID, ItemObject mItemObject) {
         
-        switch (mType) {
-            case ResourceType.Wood:
+        switch (mID) {
+            case "log":
                 //Debug.Log(this + " :Adding " + mInventory + " to " + mType);
-                storageInventory.text = mInventory.ToString();
+                storageInventory.text = mItemObject.itemCount.ToString();
                 storageInventoryCC.text = storageInventory.text;
-                break;
-            case ResourceType.Stone:
                 break;
             default:
                 break;

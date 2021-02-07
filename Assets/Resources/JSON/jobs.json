@@ -1,0 +1,10 @@
+{
+  "jobs":
+  [
+    {
+      "jobID": "LumberJack",
+      "resourceType": "Wood",
+	  "workplaceType": "Storage"
+    }
+  ]
+}

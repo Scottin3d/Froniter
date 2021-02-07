@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: Apple
   m_EditorClassIdentifier: 
   itemPrefab: {fileID: 0}
-  itemType: 0
+  itemID: apple
+  itemType: 1
   itemDescription: A bright, shiny, red apple gathered frsh from the orchard.
   itemUIicon: {fileID: 21300000, guid: ab9f171f3f5fa624aadf2b971962fac3, type: 3}
   itemUIiconColor: {r: 1, g: 0, b: 0, a: 0}
+  itemCount: 0
   isConsumable: 1
   restoreHealthValue: 15

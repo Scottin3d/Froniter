@@ -13,8 +13,10 @@ MonoBehaviour:
   m_Name: Log
   m_EditorClassIdentifier: 
   itemPrefab: {fileID: 0}
+  itemID: log
   itemType: 2
   itemDescription: A log of wood.
   itemUIicon: {fileID: 21300000, guid: c5a8bd3e2cac97045a900aa2c6fb808e, type: 3}
   itemUIiconColor: {r: 0.48235294, g: 0.41960785, b: 0.2627451, a: 1}
+  itemCount: 0
   resourceType: 0

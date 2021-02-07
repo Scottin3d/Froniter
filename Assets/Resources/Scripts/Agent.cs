@@ -17,7 +17,7 @@ public class Agent : MonoBehaviour {
     public event Action<bool, float> OnWorking;
     public event Action OnGatheringComplete;
     public event Action<int> OnInventoryChange; // to canvas handler
-    public event Action<ResourceType, int> OnInventoryDrop; // to inventory handler
+    public event Action<string, ItemObject> OnInventoryDrop; // to inventory handler
 
     // handlers
     private NavMeshAgent agent = null;
@@ -26,7 +26,7 @@ public class Agent : MonoBehaviour {
     [SerializeField] InventoryObject AgentInventory;
 
     [SerializeField] private AgentState state;
-    private int inventory;
+    [SerializeField] private ItemObject inventory = null;
     private int inventoryLimit = 4;
 
     // path finding
@@ -100,6 +100,7 @@ public class Agent : MonoBehaviour {
                 } else {
                     // check for new job
                     jobNode = ResourceHandler.current.GetResourceTransform(agentJob.jobType);
+                    inventory = jobNode.GetComponent<Resource>().itemObject;
                     if (jobNode) {
                         SetWorkingNode();
                     } else {
@@ -143,9 +144,9 @@ public class Agent : MonoBehaviour {
                 atDestination = pathComplete();
                 if (atDestination) {
                     state = AgentState.Idle;
-                    OnInventoryDrop?.Invoke(ResourceType.Wood, inventory);
-                    inventory = 0;
-                    OnInventoryChange?.Invoke(inventory);
+                    OnInventoryDrop?.Invoke(inventory.itemID, inventory);
+                    inventory.itemCount = 0;
+                    OnInventoryChange?.Invoke(inventory.itemCount);
                     workTime += 0.5f;
                 }
                 break;
@@ -177,8 +178,8 @@ public class Agent : MonoBehaviour {
 
     private void Resource_HandleOnGather(int c) {
         // Debug.Log(c + " added to player inventory.");
-        inventory += c;
-        OnInventoryChange?.Invoke(inventory);
+        inventory.itemCount += c;
+        OnInventoryChange?.Invoke(inventory.itemCount);
     }
 
     #endregion
@@ -210,6 +211,7 @@ public class Agent : MonoBehaviour {
                 MoveToTarget();
             } else {
                 jobNode = ResourceHandler.current.GetResourceTransform(agentJob.jobType);
+                inventory = jobNode.GetComponent<Resource>().itemObject;
                 if (jobNode) {
                     SetWorkingNode();
                 } else {
@@ -224,7 +226,7 @@ public class Agent : MonoBehaviour {
     }
 
     private bool IsInventoryFull() {
-        return inventory == inventoryLimit;
+        return inventory.itemCount >= inventoryLimit;
     }
 
     private void GetPath() {

@@ -20,6 +20,7 @@ public class ResourceHandler : MonoBehaviour {
     [SerializeField] Transform inGameResources = null;
     Dictionary<ResourceType, Queue<Resource>> resourcesByType = new Dictionary<ResourceType, Queue<Resource>>();
     Dictionary<ResourceType, GameObject> deadResources = new Dictionary<ResourceType, GameObject>();
+
     public GameObject prefab;
     public float radius = 10;
     public int numPrefabs = 10;

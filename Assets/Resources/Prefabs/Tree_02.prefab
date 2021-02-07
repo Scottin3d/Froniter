@@ -111,6 +111,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   resourceType: 0
+  itemObject: {fileID: 11400000, guid: 7a7b413ab0b09004588826f31fe5b76b, type: 2}
   resourceCount: 3
   gatherInterval: 2
   timeToPrep: 3

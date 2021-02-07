@@ -15,6 +15,7 @@ public class Resource : MonoBehaviour {
     /* Resource Properties
      */
     public ResourceType resourceType;
+    public ItemObject itemObject;
     public float resourceCount = 10;
     public float gatherInterval = 2f;
     public float timeToPrep = 5f;

@@ -7,12 +7,14 @@ public class InventoryHandler : MonoBehaviour {
     // instance
     public static InventoryHandler current;
     // event actions
-    public event Action<ResourceType, int> OnInventoryChange;
+    public event Action<string, ItemObject> OnInventoryChange;
     // handlers
     [SerializeField] Agent agent = null;
 
     // containers
     public Dictionary<ResourceType, int> storageInventory;
+    public Dictionary<string, ItemObject> inventory = new Dictionary<string, ItemObject>();
+
 
 
     void Awake() {
@@ -31,18 +33,15 @@ public class InventoryHandler : MonoBehaviour {
         mAgent.OnInventoryDrop += Agent_HandleOnIventoryDrop;
     }
 
-    private void Agent_HandleOnIventoryDrop(ResourceType mType, int mInventory) {
-        
-        int count;
-        if (storageInventory.ContainsKey(mType)) {
-            storageInventory[mType] += mInventory;
-            count = storageInventory[mType];
+    private void Agent_HandleOnIventoryDrop(string mID, ItemObject mItemObject) {
+        if (inventory.ContainsKey(mID)) {
+            inventory[mID].itemCount += mItemObject.itemCount;
         } else {
-            storageInventory.Add(mType, mInventory);
-            count = mInventory;
+            inventory.Add(mItemObject.itemID, mItemObject);
         }
+
         //Debug.Log(mType + " count: " + mInventory);
-        OnInventoryChange?.Invoke(mType, count);
+        OnInventoryChange?.Invoke(mID, mItemObject);
     }
 
     public Dictionary<ResourceType, int> GetResources() {

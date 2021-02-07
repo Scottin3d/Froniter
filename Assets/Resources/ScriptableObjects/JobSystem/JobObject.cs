@@ -5,6 +5,8 @@ using UnityEngine;
 public enum JobType {
     Default,
     Lumberjack,
+    Gatherer,
+
 }
 
 [CreateAssetMenu(fileName = "New Job Object", menuName = "Job System/Create Job")]

@@ -8,8 +8,9 @@ public class ResourceIconBarHandler : MonoBehaviour {
     //[SerializeField] private InventoryHandler inventoryHandler = null;
 
     private int maxNumIcons = 6;
-    private GameObject[] visibleIcons;
-    [SerializeField] Dictionary<ResourceType, int> resourceIcons;
+    private int numDisplays = 0;
+    private UIResourceDisplay[] visibleIcons;
+    [SerializeField] Dictionary<string, ItemObject> resourceIcons = new Dictionary<string, ItemObject>();
     // Start is called before the first frame update
     void Awake() {
         // set handlers
@@ -20,8 +21,7 @@ public class ResourceIconBarHandler : MonoBehaviour {
 
 
         // init containers
-        resourceIcons = new Dictionary<ResourceType, int>();
-        visibleIcons = new GameObject[maxNumIcons];
+        visibleIcons = new UIResourceDisplay[maxNumIcons];
     }
 
     private void Start() {
@@ -30,16 +30,28 @@ public class ResourceIconBarHandler : MonoBehaviour {
     }
 
     private void ShowIcons() {
-        resourceIcons = InventoryHandler.current.GetResources();
-        int s = (resourceIcons.Count > maxNumIcons) ? maxNumIcons : resourceIcons.Count;
-        for (int i = 0; i < s; i++) {
-            GameObject iconClone = Instantiate<GameObject>(resourceIconPrefab, transform);
-            visibleIcons[i] = iconClone;
-        }
+        
     }
 
-    private void InventoryHandler_HandleOnInventoryChange(ResourceType mType, int mInventoy) {
-        ShowIcons();
+    private void InventoryHandler_HandleOnInventoryChange(string mID, ItemObject mItemObject) {
+        if (resourceIcons.ContainsKey(mID)) {
+            var count = resourceIcons[mID].itemCount + mItemObject.itemCount;
+            resourceIcons[mID].itemCount = count;
+            visibleIcons[numDisplays-1].count.text = resourceIcons[mID].itemCount.ToString();
+
+        } else {
+            resourceIcons.Add(mID, mItemObject);
+
+            GameObject iconClone = Instantiate<GameObject>(resourceIconPrefab, transform);
+            UIResourceDisplay display = iconClone.GetComponent<UIResourceDisplay>();
+
+            display.icon = mItemObject.itemUIicon;
+            display.iconColor = mItemObject.itemUIiconColor;
+            display.count.text = mItemObject.itemCount.ToString();
+
+            visibleIcons[numDisplays] = display;
+            numDisplays++;
+        }
     }
 
     // Update is called once per frame
