@@ -25,14 +25,17 @@ public class AgentHandler : MonoBehaviour
     [SerializeField] GameObject agentPrefab = null;
     [SerializeField] List<Agent> gameAgents = new List<Agent>();
 
+    public Transform inGameAgents = null;
+
     private void Awake() {
         current = this;
-        Debug.Assert(agentPrefab != null); ;
+        Debug.Assert(agentPrefab != null, "Please assign an agent prefab in the editor!");
+        Debug.Assert(inGameAgents != null, "Please assign inGameAgents in the editor!");
     }
 
     private void Update() {
         if (Input.GetKeyDown(KeyCode.A)) {
-            GameObject agentClone = Instantiate<GameObject>(agentPrefab);
+            GameObject agentClone = Instantiate<GameObject>(agentPrefab, inGameAgents);
             Agent agent = agentClone.GetComponent<Agent>();
             agent.InitializeAgent(JobHandler.current.jobs[0] as JobObject);
             gameAgents.Add(agent);

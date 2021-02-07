@@ -141,6 +141,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   workTier: 1
+  workPlaceType: 1
   prefab: {fileID: 8807577375868990413}
   targetLocation: {fileID: 8524896313476256129}
   inventory: {fileID: 0}

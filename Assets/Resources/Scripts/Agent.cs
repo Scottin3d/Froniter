@@ -23,7 +23,6 @@ public class Agent : MonoBehaviour {
     private NavMeshAgent agent = null;
 
     // containers
-    //[SerializeField] private GameHandler gameHandler;
     [SerializeField] InventoryObject AgentInventory;
 
     [SerializeField] private AgentState state;
@@ -40,14 +39,13 @@ public class Agent : MonoBehaviour {
     [SerializeField] private Resource currentResouce = null;
     [SerializeField] private Transform targetNode = null;
     [SerializeField] Transform homeNode = null;
+
     // patth debug
     private NavMeshPath path;
     public Vector3[] pathPoints;
 
     // working
     [SerializeField] JobObject agentJob;
-    [SerializeField] WorkPlaceType workerType;
-    [SerializeField] JobType jobType;
 
     private bool isGather = false;
     private bool isGatherComplete = false;
@@ -93,21 +91,17 @@ public class Agent : MonoBehaviour {
                     lastState = state;
                     state = AgentState.Rest;
                     lastDestination = agent.destination;
-
                     // go home
                     GoHome();
-                    
-
                     //
                 } else if (jobNode) {
                     // return to node if has one
-                    GetWorkingNode();
+                    SetWorkingNode();
                 } else {
                     // check for new job
-                    jobNode = GameHandler.current.GetNode(jobType);
+                    jobNode = ResourceHandler.current.GetResourceTransform(agentJob.jobType);
                     if (jobNode) {
-                        GetWorkingNode();
-
+                        SetWorkingNode();
                     } else {
                         MoveToTarget();
                         // go home
@@ -152,9 +146,7 @@ public class Agent : MonoBehaviour {
                     OnInventoryDrop?.Invoke(ResourceType.Wood, inventory);
                     inventory = 0;
                     OnInventoryChange?.Invoke(inventory);
-                    // Debug.Log("Dropping off Inventory");
                     workTime += 0.5f;
-                    // Debug.Log("Workign speed increasded to: " + workTime);
                 }
                 break;
         }
@@ -172,8 +164,6 @@ public class Agent : MonoBehaviour {
     private bool pathComplete() {
         if (Vector3.Distance(agent.destination, agent.transform.position) <= agent.stoppingDistance *3f) {
                 return true;
-            if (!agent.hasPath || agent.velocity.sqrMagnitude == 0f) {
-            }
         }
 
         return false;
@@ -192,12 +182,10 @@ public class Agent : MonoBehaviour {
     }
 
     #endregion
-    private void GetWorkingNode() {
+    private void SetWorkingNode() {
         state = AgentState.MovingToGatherNode;
         Vector3 gatherPosition = jobNode.position;
         agent.SetDestination(gatherPosition);
-        Debug.Log("Heading to node: " + jobNode.name);
-
         currentResouce = jobNode.GetComponent<Resource>();
         currentResouce.Initialized(this);
         currentResouce.OnGather += Resource_HandleOnGather;
@@ -205,8 +193,7 @@ public class Agent : MonoBehaviour {
     }
 
     private void MoveToTarget() {
-        targetNode = GameHandler.current.GetTarget(workerType);
-        //targetNode = GameHandler.GetTarget_Static(workerType);
+        targetNode = JobHandler.current.GetTargetTransform(agentJob.jobWorkplace);
         Vector3 targetPosition = targetNode.position;
         agent.SetDestination(targetPosition);
     }
@@ -222,10 +209,9 @@ public class Agent : MonoBehaviour {
                 state = AgentState.MovingToTarget;
                 MoveToTarget();
             } else {
-                jobNode = GameHandler.current.GetNode(jobType);
-                //jobNode = GameHandler.GetNode_Static(jobType);
+                jobNode = ResourceHandler.current.GetResourceTransform(agentJob.jobType);
                 if (jobNode) {
-                    GetWorkingNode();
+                    SetWorkingNode();
                 } else {
                     state = AgentState.Idle;
                 }

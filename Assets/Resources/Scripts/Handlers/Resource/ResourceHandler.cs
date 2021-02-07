@@ -65,7 +65,6 @@ public class ResourceHandler : MonoBehaviour {
             float randX = UnityEngine.Random.Range(-radius, radius);
             float randZ = UnityEngine.Random.Range(-radius, radius);
             Vector3 spawnPos = new Vector3((parentPos.x - randX), 0, (parentPos.z - randZ));
-            Debug.Log("Spawn Position: " + spawnPos);
             
             // adjust y
             Vector3 rayPos = new Vector3(spawnPos.x, 100f, spawnPos.z);
@@ -73,9 +72,7 @@ public class ResourceHandler : MonoBehaviour {
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit)) {
                 if (hit.collider.CompareTag("ground")) {
-                    Debug.Log(hit.collider.tag + " Hit Position: " + hit.point);
                     spawnPos.y = hit.point.y;
-
                     GameObject prefabClone = Instantiate<GameObject>(prefab, spawnPos, Quaternion.identity);
                     //prefabClone.transform.position = spawnPos;
 
@@ -85,16 +82,15 @@ public class ResourceHandler : MonoBehaviour {
                     prefabClone.transform.localScale = Vector3.one * UnityEngine.Random.Range(0.5f, 2);
                     prefabClone.name = "resourceNode: " + cloneResource.resourceType + i;
 
-
+                    // add to resource dictionary
                     AddResource(cloneResource);
+
+                    // trigger jobs available
                     OnJobsAvailable?.Invoke(true);
                 }
-
             }
-            Debug.DrawLine(rayPos, hit.point, Color.white, 1000f);
-            
+            Debug.DrawLine(rayPos, hit.point, Color.white, 10f);
         }
-        
     }
 
     private void Resource_HandleOnResourceDestroy(GameObject mResourceType, Transform mTransform) {
