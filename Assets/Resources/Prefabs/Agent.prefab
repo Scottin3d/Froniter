@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 1448239994058104551}
   m_Layer: 0
   m_Name: Agent
-  m_TagString: Untagged
+  m_TagString: agent
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -139,13 +139,10 @@ MonoBehaviour:
   agentStoppingDistance: 1
   distance: 0
   atDestination: 0
-  lastState: 0
-  lastDestination: {x: 0, y: 0, z: 0}
   jobNode: {fileID: 0}
   currentResouce: {fileID: 0}
   targetNode: {fileID: 0}
   homeNode: {fileID: 0}
-  pathPoints: []
   workingInventory: 0
   currentInventory: 0
   currentInventoryCap: 0

@@ -5,6 +5,8 @@ using TMPro;
 using System;
 
 public class CanvasHandler : MonoBehaviour {
+    public event Action<bool, Agent> OnClick;
+
     public static CanvasHandler instance;
 
     [SerializeField] Agent agent = null;
@@ -33,6 +35,20 @@ public class CanvasHandler : MonoBehaviour {
         //inventoryHandler.OnInventoryChange += InventoryHandler_HandleOnInventoryChange;
     }
 
+
+    private void Update() {
+        if (Input.GetMouseButtonDown(0)) { 
+            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out var hit)) {
+                if (hit.collider.CompareTag("agent")) {
+                    OnClick?.Invoke(true, hit.transform.GetComponent<Agent>());
+                }
+                OnClick?.Invoke(false, null);
+            }
+        
+        }
+        
+    }
     private void AgentHandler_HandleOnAgentCreation(Agent mAgent) {
         mAgent.OnInventoryChange += Agent_HandleOnInventoryChange;
     }

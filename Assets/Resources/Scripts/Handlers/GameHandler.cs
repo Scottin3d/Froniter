@@ -4,6 +4,13 @@ using UnityEngine;
 using UnityEngine.AI;
 using System;
 
+
+public class Node {
+    public Node(Transform mLoc) { NodeLoc = mLoc; }
+
+    public Transform NodeLoc { get { return NodeLoc; } private set { nodeLoc = value; } }
+    private Transform nodeLoc;
+}
 public class GameHandler : MonoBehaviour {
     // instance
     public static GameHandler current;
@@ -33,7 +40,7 @@ public class GameHandler : MonoBehaviour {
         return ResourceHandler.current.GetResourceTransform(mType);
     }
 
-    public Transform GetTarget(WorkPlaceType mType) {
-        return JobHandler.current.GetTargetTransform(mType);
+    public Transform GetTarget(WorkObject mType) {
+        return JobHandler.current.GetTargetTransform(mType.workID);
     }
 }

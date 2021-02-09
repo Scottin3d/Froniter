@@ -23,7 +23,7 @@ public class Agent : MonoBehaviour {
     private NavMeshAgent agent = null;
 
     // containers
-    [SerializeField] InventoryObject agentInventory;
+    public InventoryObject agentInventory;
 
     [SerializeField] private AgentState state;
     [SerializeField] private ItemObject workingInventorySlot = null;
@@ -49,7 +49,7 @@ public class Agent : MonoBehaviour {
     public int currentInventoryCap;
 
     // working
-    [SerializeField] JobObject agentJob;
+    public Job agentJob;
 
     private bool isGather = false;
     private bool isGatherComplete = false;
@@ -69,7 +69,7 @@ public class Agent : MonoBehaviour {
         InventoryHandler.current.AddAgentInventory(this, agentInventory);
     }
 
-    public void InitializeAgent(JobObject mJob) {
+    public void InitializeAgent(ref Job mJob) {
         agentJob = mJob;
     }
 
@@ -115,7 +115,8 @@ public class Agent : MonoBehaviour {
                     agent.SetDestination(gatherPosition);
                 } else {
                     // check for new job
-                    jobNode = ResourceHandler.current.GetResourceTransform(agentJob.jobType);
+                    // get type of resource needed
+                    jobNode = ResourceHandler.current.GetNodeByType(agentJob.JobObject.jobResources[0]);
                     // add to agent inventory
                     //workingInventorySlot = jobNode.GetComponent<Resource>().itemObject;
                     AddNewItemToAgentInventory(jobNode.GetComponent<Resource>().itemObject);
@@ -223,7 +224,7 @@ public class Agent : MonoBehaviour {
     }
 
     private void MoveToTarget() {
-        targetNode = JobHandler.current.GetTargetTransform(agentJob.jobWorkplace);
+        targetNode = JobHandler.current.GetTargetTransform(agentJob.JobObject.jobID);
         Vector3 targetPosition = targetNode.position;
         agent.SetDestination(targetPosition);
     }
@@ -240,7 +241,7 @@ public class Agent : MonoBehaviour {
                 MoveToTarget();
             } else {
                 // get a new job node
-                jobNode = ResourceHandler.current.GetResourceTransform(agentJob.jobType);
+                jobNode = ResourceHandler.current.GetNodeByType(agentJob.JobObject.jobResources[0]);
                 //workingInventorySlot = jobNode.GetComponent<Resource>().itemObject;
                 AddNewItemToAgentInventory(jobNode.GetComponent<Resource>().itemObject);
                 if (jobNode) {

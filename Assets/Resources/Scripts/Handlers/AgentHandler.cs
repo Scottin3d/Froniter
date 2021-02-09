@@ -37,7 +37,8 @@ public class AgentHandler : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.A)) {
             GameObject agentClone = Instantiate<GameObject>(agentPrefab, inGameAgents);
             Agent agent = agentClone.GetComponent<Agent>();
-            agent.InitializeAgent(JobHandler.current.jobs[0] as JobObject);
+            Job agentJob = JobHandler.current.GetAvailableJob("lumberjack");
+            agent.InitializeAgent(ref agentJob);
             gameAgents.Add(agent);
             OnAgentCreation?.Invoke(agent);
         }

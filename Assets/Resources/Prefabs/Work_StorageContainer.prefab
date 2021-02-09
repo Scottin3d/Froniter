@@ -140,11 +140,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34c6bfea4fe80084996d56f6a24ece69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  workTier: 1
-  workPlaceType: 1
+  workObject: {fileID: 11400000, guid: 401b079b8d90f584393a861db2f90861, type: 2}
   prefab: {fileID: 8807577375868990413}
-  targetLocation: {fileID: 8524896313476256129}
-  inventory: {fileID: 0}
+  PrefabAccessPoints: {fileID: 892318371445926774}
+  jobObject: {fileID: 11400000, guid: 2766ac125fb07b547a53aedbed770d32, type: 2}
+  workJobs: []
+  maxNumberOfJobs: 0
+  openJobs: 0
 --- !u!1 &6645434513598119274
 GameObject:
   m_ObjectHideFlags: 0
