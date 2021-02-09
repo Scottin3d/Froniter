@@ -36,7 +36,8 @@ public class UIAgentInfo : MonoBehaviour {
             iconCC.sprite = icon.sprite;
             job.text = mAgent.agentJob.JobObject.jobID;
             jobCC.text = job.text; ;
-            inventoryCount.text = mAgent.agentInventory.container[0].ToString();
+            // TODO fixe hard code
+            inventoryCount.text = mAgent.agentInventory.Container["wood"].ToString();
         }
 
     }

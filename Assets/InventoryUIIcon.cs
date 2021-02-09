@@ -33,7 +33,7 @@ public class InventoryUIIcon : MonoBehaviour {
         switch (mID) {
             case "wood":
                 //Debug.Log(this + " :Adding " + mInventory + " to " + mType);
-                labelCC.text = mSlot.GetItemCount().ToString();
+                labelCC.text = mSlot.ItemCount.ToString();
                 labelCC.text = label.text;
                 break;
             default:

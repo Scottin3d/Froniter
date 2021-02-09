@@ -23,7 +23,7 @@ public class Agent : MonoBehaviour {
     private NavMeshAgent agent = null;
 
     // containers
-    public InventoryObject agentInventory;
+    public Inventory agentInventory;
 
     [SerializeField] private AgentState state;
     [SerializeField] private ItemObject workingInventorySlot = null;
@@ -65,8 +65,8 @@ public class Agent : MonoBehaviour {
         //Debug.Assert(gameHandler != null, "Please set Game Handler");
         agent = GetComponent<NavMeshAgent>();
         state = AgentState.Idle;
-        agentInventory = new InventoryObject();
-        InventoryHandler.current.AddAgentInventory(this, agentInventory);
+        agentInventory = new Inventory(this);
+        InventoryHandler.current.AddAgentInventory(this);
     }
 
     public void InitializeAgent(ref Job mJob) {
@@ -78,9 +78,9 @@ public class Agent : MonoBehaviour {
 
 
         if (currentResouce) {
-            agentInventory.Contains(currentResouce.itemObject.itemID, out var index);
-            currentInventory = agentInventory.container[index].GetItemCount();
-            currentInventoryCap = agentInventory.container[index].GetMaxCount();
+            agentInventory.Contains(currentResouce.itemObject.itemID);
+            currentInventory = agentInventory.Container[currentResouce.itemObject.itemID].ItemCount;
+            currentInventoryCap = agentInventory.Container[currentResouce.itemObject.itemID].MaxCount;
         }
         agent.stoppingDistance = agentStoppingDistance;
         distance = Vector3.Distance(agent.transform.position, agent.destination);
@@ -167,10 +167,10 @@ public class Agent : MonoBehaviour {
                     state = AgentState.Idle;
                     
                     // TODO remove from agent inventory
-                    if (agentInventory.Contains(workingInventorySlot.itemID, out var index)) {
-                        OnInventoryDrop?.Invoke(workingInventorySlot.itemID, agentInventory.container[index]);
+                    if (agentInventory.Contains(workingInventorySlot.itemID)) {
+                        OnInventoryDrop?.Invoke(workingInventorySlot.itemID, agentInventory.Container[workingInventorySlot.itemID]);
 
-                        agentInventory.container[index].AddItemCount(-currentInventory);
+                        agentInventory.Container[workingInventorySlot.itemID].AddItemCount(-currentInventory);
                         OnInventoryChange?.Invoke(currentInventory);
                         //workTime += 0.5f;
                     }
@@ -204,9 +204,9 @@ public class Agent : MonoBehaviour {
 
     private void Resource_HandleOnGather(int c) {
         // Debug.Log(c + " added to player inventory.");
-        if (agentInventory.Contains(workingInventorySlot.itemID, out var index)) {
-            agentInventory.container[index].AddItemCount(c);
-            OnInventoryChange?.Invoke(agentInventory.container[index].GetItemCount());
+        if (agentInventory.Contains(workingInventorySlot.itemID)) {
+            agentInventory.Container[workingInventorySlot.itemID].AddItemCount(c);
+            OnInventoryChange?.Invoke(agentInventory.Container[workingInventorySlot.itemID].ItemCount);
         }
         //inventory.itemCount += c;
         
@@ -258,8 +258,8 @@ public class Agent : MonoBehaviour {
     }
 
     private bool IsInventoryFull() {
-        if (agentInventory.Contains(workingInventorySlot.itemID, out var index)) {
-            return agentInventory.container[index].GetItemCount() >= agentInventory.container[index].GetMaxCount();
+        if (agentInventory.Contains(workingInventorySlot.itemID)) {
+            return agentInventory.Container[workingInventorySlot.itemID].ItemCount >= agentInventory.Container[workingInventorySlot.itemID].MaxCount;
         }
 
         return false;
@@ -267,13 +267,13 @@ public class Agent : MonoBehaviour {
 
     private void AddNewItemToAgentInventory(ItemObject mInventory) {
 
-        agentInventory.AddItem(mInventory, 0, out int index);
-        workingInventorySlot = agentInventory.container[index].GetItem();
+        agentInventory.AddItem(mInventory, 0);
+        workingInventorySlot = agentInventory.Container[workingInventorySlot.itemID].Item;
     }
 
     private ItemObject GetWorkingItemFromIventory() {
-        agentInventory.Contains(workingInventorySlot.itemID, out var index);
-        return agentInventory.container[index].GetItem();
+        agentInventory.Contains(workingInventorySlot.itemID);
+        return agentInventory.Container[workingInventorySlot.itemID].Item;
     }
 
     private void GetPath() {

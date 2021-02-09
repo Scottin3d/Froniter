@@ -58,7 +58,7 @@ public class CanvasHandler : MonoBehaviour {
         switch (mID) {
             case "log":
                 //Debug.Log(this + " :Adding " + mInventory + " to " + mType);
-                storageInventory.text = mslot.GetItemCount().ToString();
+                storageInventory.text = mslot.ItemCount.ToString();
                 storageInventoryCC.text = storageInventory.text;
                 break;
             default:

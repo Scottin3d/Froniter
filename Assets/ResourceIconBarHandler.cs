@@ -27,24 +27,16 @@ public class ResourceIconBarHandler : MonoBehaviour {
         GameObject iconClone = Instantiate<GameObject>(resourceIconPrefab, transform);
         InventorySlot add = new InventorySlot(mSlot);
         UIResourceDisplay display = iconClone.GetComponent<UIResourceDisplay>();
-        resourceIcons.Add(mSlot.GetItem().itemID, display);
+        resourceIcons.Add(mSlot.Item.itemID, display);
 
         // set icon values
-        display.icon = mSlot.GetItem().itemUIicon;
-        display.iconColor = mSlot.GetItem().itemUIiconColor;
-        display.count.text = mSlot.GetItemCount().ToString();
+        display.icon = mSlot.Item.itemUIicon;
+        display.iconColor = mSlot.Item.itemUIiconColor;
+        display.count.text = mSlot.ItemCount.ToString();
     }
 
     private void UpdateIcons(InventorySlot mSlot) {
-        foreach (var ID in InventoryHandler.current.inventory) {
-            if (resourceIcons.ContainsKey(ID.Key)) {
-                resourceIcons[ID.Key].icon = mSlot.GetItem().itemUIicon;
-                resourceIcons[ID.Key].iconColor = mSlot.GetItem().itemUIiconColor;
-                resourceIcons[ID.Key].count.text = mSlot.GetItemCount().ToString();
-            } else {
-                CreateIcon(mSlot);
-            }
-        }
+        
     }
 
     private void InventoryHandler_HandleOnInventoryChange(string mID, InventorySlot mSlot) {
