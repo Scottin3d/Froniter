@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-
-
 public class Resource : MonoBehaviour {
     /* Event Actions
      */
@@ -35,6 +33,8 @@ public class Resource : MonoBehaviour {
         agent.OnWorking += HandleOnWorking;
     }
 
+
+    // TODO move out of update to remove mono behavoir
     private void Update() {
         // gather from resource
         if (working) {

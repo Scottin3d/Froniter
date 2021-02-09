@@ -37,7 +37,7 @@ public class UIAgentInfo : MonoBehaviour {
             job.text = mAgent.agentJob.JobObject.jobID;
             jobCC.text = job.text; ;
             // TODO fixe hard code
-            inventoryCount.text = mAgent.agentInventory.Container["wood"].ToString();
+            inventoryCount.text = mAgent.agentInventory.Container[ResourceType.wood.ToString()].ItemCount.ToString();
         }
 
     }

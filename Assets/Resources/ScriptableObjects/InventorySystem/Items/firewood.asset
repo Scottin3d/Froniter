@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c887151c89776044abde47ca24781a8f, type: 3}
-  m_Name: SawnWood
+  m_Name: firewood
   m_EditorClassIdentifier: 
   itemPrefab: {fileID: 0}
-  itemID: sawnwood
+  itemID: firewood
   itemType: 2
-  itemDescription: A sturdy wood board, treated and polished for use in building.
-  itemUIicon: {fileID: 21300000, guid: aecdafec3d411fe439c88e70e07feee2, type: 3}
-  itemUIiconColor: {r: 1, g: 1, b: 1, a: 1}
+  itemDescription: Split from fallen trees to fuel the fires.
+  itemUIicon: {fileID: 21300000, guid: c175dad72c199764d8dae9e4419679b0, type: 3}
+  itemUIiconColor: {r: 0.88235295, g: 0.73333335, b: 0.5019608, a: 1}
   itemCount: 0
-  resourceType: 0
+  resourceType: 8

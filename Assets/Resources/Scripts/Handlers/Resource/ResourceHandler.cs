@@ -4,11 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public enum ResourceType {
-    Default,
-    Wood,
-    Stone,
-}
+
 
 public class ResourceHandler : MonoBehaviour {
     // instance
@@ -69,7 +65,7 @@ public class ResourceHandler : MonoBehaviour {
             float randX = UnityEngine.Random.Range(-radius, radius);
             float randZ = UnityEngine.Random.Range(-radius, radius);
             Vector3 spawnPos = new Vector3((parentPos.x - randX), 0, (parentPos.z - randZ));
-            
+
             // adjust y
             Vector3 rayPos = new Vector3(spawnPos.x, 100f, spawnPos.z);
             Ray ray = new Ray(rayPos, Vector3.down);
@@ -101,26 +97,18 @@ public class ResourceHandler : MonoBehaviour {
         GameObject deadResource = Instantiate<GameObject>(mResourceType, mTransform.position, mTransform.rotation, inGameResources);
     }
 
-    public Transform GetResourceTransform(JobType mType) {
-        // check dictionary for type
-        // return first
-        switch (mType) {
-            case JobType.Lumberjack:
-                return GetNodeByType(ResourceType.Wood);
-            default:
-                break;
-        }
-        return null;
-    }
 
-    public Transform GetNodeByType(ResourceType mType) {
+    // TODO get resoure by priority
+    public Transform GetResource(ResourceType mType, out Resource mResource) {
         Transform node;
+        mResource = null;
         if (resourcesByType.ContainsKey(mType)) {
             // check queue
             if (resourcesByType[mType].Count == 0) {
                 node = null;
             } else {
                 node = resourcesByType[mType].Dequeue().transform;
+                mResource = node.GetComponent<Resource>();
             }
         } else {
             // no nodes available

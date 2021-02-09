@@ -29,6 +29,10 @@ public class Job {
     public WorkPlace JobWorkPlace{ get { return jobWorkPlace; } private set { jobWorkPlace = value; } }
     private WorkPlace jobWorkPlace = null;
 
+    public void SetAgent(Agent mAgent) {
+        JobAgent = mAgent;
+    }
+
     public bool HasAgent() {
         return jobAgent != null;
     }
@@ -85,6 +89,7 @@ public class JobHandler : MonoBehaviour {
         // TODO assign professons
         Job retJob = null;
         if (availableJobs.ContainsKey(mJobKey)) {
+            
             retJob = availableJobs[mJobKey].Dequeue();
             if (availableJobs[mJobKey].Count == 0) {
                 availableJobs.Remove(mJobKey);

@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c887151c89776044abde47ca24781a8f, type: 3}
-  m_Name: stone
+  m_Name: timber
   m_EditorClassIdentifier: 
   itemPrefab: {fileID: 0}
-  itemID: stone
+  itemID: log
   itemType: 2
-  itemDescription: One of the basic building materials.
-  itemUIicon: {fileID: 21300000, guid: 0a30266d1e7d48441a2943d8e97efa2f, type: 3}
-  itemUIiconColor: {r: 0.3584906, g: 0.3584906, b: 0.3584906, a: 1}
+  itemDescription: A log of wood.
+  itemUIicon: {fileID: 21300000, guid: c5a8bd3e2cac97045a900aa2c6fb808e, type: 3}
+  itemUIiconColor: {r: 0.48235294, g: 0.41960785, b: 0.2627451, a: 1}
   itemCount: 0
-  resourceType: 2
+  resourceType: 0

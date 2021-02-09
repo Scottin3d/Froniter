@@ -9,14 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c887151c89776044abde47ca24781a8f, type: 3}
-  m_Name: Log
+  m_Script: {fileID: 11500000, guid: 1e23c375a82426346a4e53c4eb5c1cb7, type: 3}
+  m_Name: stonetools
   m_EditorClassIdentifier: 
   itemPrefab: {fileID: 0}
-  itemID: log
-  itemType: 2
-  itemDescription: A log of wood.
-  itemUIicon: {fileID: 21300000, guid: c5a8bd3e2cac97045a900aa2c6fb808e, type: 3}
-  itemUIiconColor: {r: 0.48235294, g: 0.41960785, b: 0.2627451, a: 1}
+  itemID: stonetools
+  itemType: 0
+  itemDescription: 
+  itemUIicon: {fileID: 21300000, guid: 555d6ee630df961409c670a9a86adf4a, type: 3}
+  itemUIiconColor: {r: 1, g: 1, b: 1, a: 1}
   itemCount: 0
-  resourceType: 0
+  durability: 10

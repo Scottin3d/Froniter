@@ -71,6 +71,7 @@ public class Agent : MonoBehaviour {
 
     public void InitializeAgent(ref Job mJob) {
         agentJob = mJob;
+        mJob.SetAgent(this);
     }
 
     private void Update() {
@@ -114,12 +115,14 @@ public class Agent : MonoBehaviour {
                     Vector3 gatherPosition = jobNode.position;
                     agent.SetDestination(gatherPosition);
                 } else {
+                    // TODO job resource priority
                     // check for new job
-                    // get type of resource needed
-                    jobNode = ResourceHandler.current.GetNodeByType(agentJob.JobObject.jobResources[0]);
+                    // get type of resource needed by 
+                    jobNode = ResourceHandler.current.GetResource(agentJob.JobObject.jobResources[0], out currentResouce);
                     // add to agent inventory
-                    //workingInventorySlot = jobNode.GetComponent<Resource>().itemObject;
-                    AddNewItemToAgentInventory(jobNode.GetComponent<Resource>().itemObject);
+                    workingInventorySlot = currentResouce.itemObject;
+                    agentInventory.AddItem(workingInventorySlot, 0);
+                    //AddNewItemToAgentInventory(workingInventorySlot);
                     //inventory = ;
 
                     if (jobNode) {
@@ -170,7 +173,7 @@ public class Agent : MonoBehaviour {
                     if (agentInventory.Contains(workingInventorySlot.itemID)) {
                         OnInventoryDrop?.Invoke(workingInventorySlot.itemID, agentInventory.Container[workingInventorySlot.itemID]);
 
-                        agentInventory.Container[workingInventorySlot.itemID].AddItemCount(-currentInventory);
+                        agentInventory.Container[workingInventorySlot.itemID].AddItemCount(out var mAmount, -currentInventory);
                         OnInventoryChange?.Invoke(currentInventory);
                         //workTime += 0.5f;
                     }
@@ -205,7 +208,7 @@ public class Agent : MonoBehaviour {
     private void Resource_HandleOnGather(int c) {
         // Debug.Log(c + " added to player inventory.");
         if (agentInventory.Contains(workingInventorySlot.itemID)) {
-            agentInventory.Container[workingInventorySlot.itemID].AddItemCount(c);
+            agentInventory.Container[workingInventorySlot.itemID].AddItemCount(out var mAmount, c);
             OnInventoryChange?.Invoke(agentInventory.Container[workingInventorySlot.itemID].ItemCount);
         }
         //inventory.itemCount += c;
@@ -224,7 +227,7 @@ public class Agent : MonoBehaviour {
     }
 
     private void MoveToTarget() {
-        targetNode = JobHandler.current.GetTargetTransform(agentJob.JobObject.jobID);
+        targetNode = JobHandler.current.GetTargetTransform(agentJob.JobWorkPlace.workObject.workID);
         Vector3 targetPosition = targetNode.position;
         agent.SetDestination(targetPosition);
     }
@@ -241,9 +244,10 @@ public class Agent : MonoBehaviour {
                 MoveToTarget();
             } else {
                 // get a new job node
-                jobNode = ResourceHandler.current.GetNodeByType(agentJob.JobObject.jobResources[0]);
-                //workingInventorySlot = jobNode.GetComponent<Resource>().itemObject;
-                AddNewItemToAgentInventory(jobNode.GetComponent<Resource>().itemObject);
+                jobNode = ResourceHandler.current.GetResource(agentJob.JobObject.jobResources[0], out currentResouce);
+                // add to agent inventory
+                workingInventorySlot = currentResouce.itemObject;
+                agentInventory.AddItem(workingInventorySlot, 0);
                 if (jobNode) {
                     SetWorkingNode();
                 } else {
@@ -265,10 +269,10 @@ public class Agent : MonoBehaviour {
         return false;
     }
 
-    private void AddNewItemToAgentInventory(ItemObject mInventory) {
+    private void AddNewItemToAgentInventory() {
 
-        agentInventory.AddItem(mInventory, 0);
-        workingInventorySlot = agentInventory.Container[workingInventorySlot.itemID].Item;
+        agentInventory.AddItem(workingInventorySlot, 0);
+        //workingInventorySlot = agentInventory.Container[workingInventorySlot.itemID].Item;
     }
 
     private ItemObject GetWorkingItemFromIventory() {

@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6da4d0a2e1c86dd44ba2b00b42474c53, type: 3}
-  m_Name: Gatherer
+  m_Name: gatherer
   m_EditorClassIdentifier: 
   jobID: gatherer
   jobResources: 
   jobWorkplace: {fileID: 0}
   jobDescription: 
-  jobUIicon: {fileID: 0}
+  jobUIicon: {fileID: 21300000, guid: 555d6ee630df961409c670a9a86adf4a, type: 3}
   jobUIiconColor: {r: 1, g: 1, b: 1, a: 1}
