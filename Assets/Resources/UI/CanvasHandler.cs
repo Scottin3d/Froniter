@@ -42,8 +42,9 @@ public class CanvasHandler : MonoBehaviour {
             if (Physics.Raycast(ray, out var hit)) {
                 if (hit.collider.CompareTag("agent")) {
                     OnClick?.Invoke(true, hit.transform.GetComponent<Agent>());
+                } else { 
+                    OnClick?.Invoke(false, null);
                 }
-                OnClick?.Invoke(false, null);
             }
         
         }

@@ -5,11 +5,6 @@ using UnityEngine;
 using UnityEngine.AI;
 
 
-public enum Jobs { 
-    Default,
-    woodcutter,
-}
-
 public class Agent : MonoBehaviour {
 
 
@@ -18,6 +13,9 @@ public class Agent : MonoBehaviour {
     public event Action OnGatheringComplete;
     public event Action<int> OnInventoryChange; // to canvas handler
     public event Action<string, InventorySlot> OnInventoryDrop; // to inventory handler
+    public event Action<int> OnEnergyChange;
+
+    private event Action<AgentState> OnAgentStateChange;
 
     // handlers
     private NavMeshAgent agent = null;
@@ -30,7 +28,7 @@ public class Agent : MonoBehaviour {
 
     // path finding
     public float agentStoppingDistance = 1f;
-    [SerializeField] private float distance;
+    [SerializeField] private float agentDistanceToTarget;
     public bool atDestination = false;
     private AgentState lastState;
     private Vector3 lastDestination;
@@ -56,6 +54,7 @@ public class Agent : MonoBehaviour {
     private float workTime = 1f;
 
     [SerializeField] private float energy = 60f;
+    [SerializeField] private float energyIncriment;
     private float rechargeRate = 0.05f;
     
 
@@ -67,6 +66,10 @@ public class Agent : MonoBehaviour {
         state = AgentState.Idle;
         agentInventory = new Inventory(this);
         InventoryHandler.current.AddAgentInventory(this);
+        energyIncriment = energy / 5;
+        agent.stoppingDistance = agentStoppingDistance;
+
+        OnAgentStateChange += HandleOnAgentStateChange;
     }
 
     public void InitializeAgent(ref Job mJob) {
@@ -76,25 +79,32 @@ public class Agent : MonoBehaviour {
 
     private void Update() {
         // set local variables
-
-
         if (currentResouce) {
             agentInventory.Contains(currentResouce.itemObject.itemID);
             currentInventory = agentInventory.Container[currentResouce.itemObject.itemID].ItemCount;
             currentInventoryCap = agentInventory.Container[currentResouce.itemObject.itemID].MaxCount;
         }
-        agent.stoppingDistance = agentStoppingDistance;
-        distance = Vector3.Distance(agent.transform.position, agent.destination);
+        
+        agentDistanceToTarget = Vector3.Distance(agent.transform.position, agent.destination);
 
-        if (state != AgentState.Idle) {
+        if (state != AgentState.Idle || state != AgentState.Rest) {
             energy -= Time.deltaTime;
         }
 
-        CheckState();
-
+        
+        // debug draw agent path
         path = agent.path;
         pathPoints = path.corners;
         GetPath();
+
+        // update agent engery display
+        if ((int)energy % energyIncriment == 0) {
+            OnEnergyChange?.Invoke((int)(energy / energyIncriment));
+        }
+    }
+
+    private void HandleOnAgentStateChange(AgentState mState) {
+        CheckState();
     }
 
     private void CheckState() {
@@ -122,9 +132,6 @@ public class Agent : MonoBehaviour {
                     // add to agent inventory
                     workingInventorySlot = currentResouce.itemObject;
                     agentInventory.AddItem(workingInventorySlot, 0);
-                    //AddNewItemToAgentInventory(workingInventorySlot);
-                    //inventory = ;
-
                     if (jobNode) {
                         SetWorkingNode();
                     } else {
@@ -195,7 +202,6 @@ public class Agent : MonoBehaviour {
         if (Vector3.Distance(agent.destination, agent.transform.position) <= agent.stoppingDistance *3f) {
                 return true;
         }
-
         return false;
     }
 
@@ -216,6 +222,7 @@ public class Agent : MonoBehaviour {
     }
 
     #endregion
+
     private void SetWorkingNode() {
         state = AgentState.MovingToGatherNode;
         Vector3 gatherPosition = jobNode.position;
@@ -267,17 +274,6 @@ public class Agent : MonoBehaviour {
         }
 
         return false;
-    }
-
-    private void AddNewItemToAgentInventory() {
-
-        agentInventory.AddItem(workingInventorySlot, 0);
-        //workingInventorySlot = agentInventory.Container[workingInventorySlot.itemID].Item;
-    }
-
-    private ItemObject GetWorkingItemFromIventory() {
-        agentInventory.Contains(workingInventorySlot.itemID);
-        return agentInventory.Container[workingInventorySlot.itemID].Item;
     }
 
     private void GetPath() {

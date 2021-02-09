@@ -3,16 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public enum AgentState {
-    Idle,
-    Rest,
-    MovingToGatherNode,
-    Gathering,
-    MovingToTarget,
-}
-
-
-
 public class AgentHandler : MonoBehaviour
 {
     // instance
@@ -22,10 +12,10 @@ public class AgentHandler : MonoBehaviour
     public event Action<Agent> OnAgentCreation;
 
     // containers
+    public Transform inGameAgents = null;
     [SerializeField] GameObject agentPrefab = null;
     [SerializeField] List<Agent> gameAgents = new List<Agent>();
 
-    public Transform inGameAgents = null;
 
     private void Awake() {
         current = this;

@@ -5,6 +5,9 @@ using UnityEngine.UI;
 using TMPro;
 
 public class UIAgentInfo : MonoBehaviour {
+    public static UIAgentInfo current;
+    private Agent localAgent;
+
     public TextMeshProUGUI agentName;
     public TextMeshProUGUI agentNameCC;
     public Image icon;
@@ -12,23 +15,35 @@ public class UIAgentInfo : MonoBehaviour {
     public TextMeshProUGUI job;
     public TextMeshProUGUI jobCC;
     public TextMeshProUGUI inventoryCount;
+    public Transform agentEnergy;
 
+    private void Awake() {
+        current = this;
+    }
     private void Start() {
         CanvasHandler.instance.OnClick += HandleOnClick;
-
-        gameObject.SetActive(false);
-        foreach (Transform child in transform) {
-            child.gameObject.SetActive(false);
-        }
+        current.gameObject.SetActive(false);
     }
-    void HandleOnClick(bool mSelected, Agent mAgent = null) {
-        gameObject.SetActive(mSelected);
 
+    public void OnButtonClick(bool b) {
+        if (!b && localAgent) {
+            localAgent.OnEnergyChange -= HandleEnergyChange;
+        }
+        gameObject.SetActive(b);
+    }
+
+    #region Event Handlers
+    void HandleOnClick(bool mSelected, Agent mAgent = null) {
+        localAgent = mAgent;
+
+        gameObject.SetActive(mSelected);
         foreach (Transform child in transform) {
             child.gameObject.SetActive(mSelected);
         }
-        
+
+
         if (mSelected && mAgent) {
+            mAgent.OnEnergyChange += HandleEnergyChange;
             agentName.text = mAgent.transform.name;
             agentNameCC.text = agentName.text;
             icon.sprite = mAgent.agentJob.JobObject.jobUIicon;
@@ -37,8 +52,18 @@ public class UIAgentInfo : MonoBehaviour {
             job.text = mAgent.agentJob.JobObject.jobID;
             jobCC.text = job.text; ;
             // TODO fixe hard code
-            inventoryCount.text = mAgent.agentInventory.Container[ResourceType.wood.ToString()].ItemCount.ToString();
+            //inventoryCount.text = mAgent.agentInventory.Container[ResourceType.wood.ToString()].ItemCount.ToString();
         }
-
     }
+
+    public void HandleEnergyChange(int mEngery) {
+        if (mEngery >= 0) {
+            for (int i = agentEnergy.childCount; i > mEngery; i--) {
+                agentEnergy.GetChild(i - 1).gameObject.SetActive(false);
+            }
+        }
+        
+    }
+    #endregion
+   
 }

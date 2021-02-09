@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4083c9f1c4688db4a84b1d1d74d1f560, type: 3}
-  m_Name: warehouse
+  m_Name: Warehouse
   m_EditorClassIdentifier: 
   workID: warehouse
   maxJobs: 1
