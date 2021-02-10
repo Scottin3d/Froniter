@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6da4d0a2e1c86dd44ba2b00b42474c53, type: 3}
+  m_Name: Gatherer
+  m_EditorClassIdentifier: 
+  jobID: gatherer
+  jobResources: 
+  jobWorkplace: {fileID: 0}
+  jobDescription: 
+  jobUIicon: {fileID: 21300000, guid: 555d6ee630df961409c670a9a86adf4a, type: 3}
+  jobUIiconColor: {r: 1, g: 1, b: 1, a: 1}

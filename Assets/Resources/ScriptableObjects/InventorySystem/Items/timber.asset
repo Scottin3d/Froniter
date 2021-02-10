@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c887151c89776044abde47ca24781a8f, type: 3}
+  m_Name: timber
+  m_EditorClassIdentifier: 
+  itemPrefab: {fileID: 0}
+  itemID: log
+  itemType: 2
+  itemDescription: A log of wood.
+  itemUIicon: {fileID: 21300000, guid: c5a8bd3e2cac97045a900aa2c6fb808e, type: 3}
+  itemUIiconColor: {r: 0.48235294, g: 0.41960785, b: 0.2627451, a: 1}
+  itemCount: 0
+  resourceType: 0
