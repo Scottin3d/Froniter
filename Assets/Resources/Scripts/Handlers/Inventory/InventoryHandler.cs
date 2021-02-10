@@ -62,4 +62,12 @@ public class InventoryHandler : MonoBehaviour {
             Debug.Log(mAgent + " inventory already stored");
         }
     }
+
+    public void AddWorkplaceInventory(WorkPlace mWorkplace) {
+        if (!workPlaceInventories.ContainsKey(mWorkplace)) {
+            workPlaceInventories.Add(mWorkplace, mWorkplace.workplaceInventory);
+        } else {
+            Debug.Log(mWorkplace + " inventory already stored");
+        }
+    }
 }

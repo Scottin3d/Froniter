@@ -2,7 +2,8 @@
 public enum AgentState {
     Idle,
     Rest,
-    MovingToGatherNode,
-    Gathering,
+    MovingToNode,
     MovingToTarget,
+    Working,
+    Delivering,
 }

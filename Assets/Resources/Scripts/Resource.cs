@@ -29,11 +29,11 @@ public class Resource : MonoBehaviour {
 
     public void Initialized(Agent script) {
         agent = script;
-        agent.OnGatheringComplete += HandleResourceDestroy;
+        agent.OnCollectingComplete += HandleResourceDestroy;
         agent.OnWorking += HandleOnWorking;
     }
 
-
+    /*
     // TODO move out of update to remove mono behavoir
     private void Update() {
         // gather from resource
@@ -63,10 +63,9 @@ public class Resource : MonoBehaviour {
             }
         }
     }
-
-    public void HandleOnWorking(bool b, float workMulitplier = 1f) {
+    */
+    public void HandleOnWorking(bool b) {
         working = b;
-        gatherSpeedMultiplier = workMulitplier;
         if (resourceCount == 0) {
             OnGatherComplete?.Invoke(true);
         }
@@ -75,7 +74,7 @@ public class Resource : MonoBehaviour {
     public void HandleResourceDestroy() {
         OnResourceDestroyed?.Invoke(deadPrefab, transform);
         agent.OnWorking -= HandleOnWorking;
-        agent.OnGatheringComplete -= HandleResourceDestroy;
+        agent.OnCollectingComplete -= HandleResourceDestroy;
         // Debug.Log("Resource complete: " + transform.name);
         Destroy(transform.gameObject);
     }

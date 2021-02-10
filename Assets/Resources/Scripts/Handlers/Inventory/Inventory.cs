@@ -44,6 +44,7 @@ public class Inventory {
         return false;
     }
 
+
     /// <summary>
     /// Removes item stock from specified inventory item.
     /// </summary>
@@ -100,9 +101,9 @@ public class Inventory {
     /// <param name="mSlot">The item slot to be copied and added to the stock.</param>
     public void AddItem(InventorySlot mSlot) {
         if (Contains(mSlot.Item.itemID)) {
-            container[mSlot.Item.itemID].AddItemCount(out var mAmount, mSlot.Item.itemCount);
+            container[mSlot.Item.itemID].AddItemCount(out var mAmount, mSlot.ItemCount);
         } else {
-            container.Add(mSlot.Item.itemID, new InventorySlot(mSlot.Item, mSlot.Item.itemCount));
+            container.Add(mSlot.Item.itemID, new InventorySlot(mSlot.Item, mSlot.ItemCount));
         }
     }
 }

@@ -13,9 +13,11 @@ public class WorkPlace : MonoBehaviour {
     public Transform PrefabAccessPoints = null;
 
     public JobObject jobObject;
+    public Inventory workplaceInventory;
     [SerializeField] private Job[] workJobs;
     [SerializeField] private int maxNumberOfJobs;
     [SerializeField] private int openJobs;
+
     // on awake
     // set in object from prefab
     //   workLoc = prefab.transform
@@ -47,6 +49,10 @@ public class WorkPlace : MonoBehaviour {
         }
 
         workObject.InitWorkObject(transform, points);
+
+        // init inventory
+        workplaceInventory = new Inventory(this);
+        InventoryHandler.current.AddWorkplaceInventory(this);
     }
 
 }
