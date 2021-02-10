@@ -109,10 +109,6 @@ public class Agent : MonoBehaviour {
 
     private void HandleOnAgentStateChange(AgentState mState) {
         state = mState;
-        CheckState(mState);
-    }
-
-    private void CheckState(AgentState mState) {
         switch (mState) {
             case AgentState.Idle:
                 StartCoroutine(AgentIdle());

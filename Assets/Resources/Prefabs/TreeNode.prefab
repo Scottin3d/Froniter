@@ -112,9 +112,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resourceType: 1
   itemObject: {fileID: 11400000, guid: 7a7b413ab0b09004588826f31fe5b76b, type: 2}
-  resourceCount: 2
-  gatherInterval: 5
-  timeToPrep: 5
+  resourceCount: 5
+  gatherInterval: 0.5
+  timeToPrep: 1
   deadPrefab: {fileID: 4766159044075265432, guid: 32143005600a5fd4e9c1ac4fbf81b953, type: 3}
   agent: {fileID: 0}
   gather: 0
