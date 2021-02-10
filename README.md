@@ -1,5 +1,3 @@
-
-# Prototypes
 # About 
 Scott Shirley: [@Scottin3d](https://github.com/Scottin3d)
 
@@ -20,4 +18,3 @@ Below is a video of the AI going through the different states. The green lines a
 ![Video of AI](https://i.imgur.com/y2KFGVv.gif)  
 
 The AI will broadcast an event that it has reached its destination. This signals the resource node that it is now workable. There are two phases to working a resource. The first is preparing it, like chopping down a tree. The second is gather the resource. All of these actions are controlled in the resource as long as the AI is working it. If the AI’s inventory is filled before the resource is complete, it will broadcast the working event again with the appropriate bool. Once the resource is depleted, it will broadcast a completion event that the AI subscribes to when it is assigned the node.  
-
