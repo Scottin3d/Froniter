@@ -21,7 +21,7 @@ public class UIAgentInfo : MonoBehaviour {
         current = this;
     }
     private void Start() {
-        CanvasHandler.instance.OnClick += HandleOnClick;
+        CanvasHandler.instance.OnAgentClick += HandleOnClick;
         current.gameObject.SetActive(false);
     }
 
@@ -44,12 +44,12 @@ public class UIAgentInfo : MonoBehaviour {
 
         if (mSelected && mAgent) {
             mAgent.OnEnergyChange += HandleEnergyChange;
-            agentName.text = mAgent.transform.name;
+            agentName.text = mAgent.agentJobType.ToString();
             agentNameCC.text = agentName.text;
             icon.sprite = mAgent.agentJob.JobObject.jobUIicon;
             icon.color = mAgent.agentJob.JobObject.jobUIiconColor;
             iconCC.sprite = icon.sprite;
-            job.text = mAgent.agentJob.JobObject.jobID;
+            job.text = mAgent.agentJobType.ToString();
             jobCC.text = job.text; ;
             // TODO fixe hard code
             //inventoryCount.text = mAgent.agentInventory.Container[ResourceType.wood.ToString()].ItemCount.ToString();

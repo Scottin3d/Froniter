@@ -53,6 +53,7 @@ public class WorkPlace : MonoBehaviour {
         // init inventory
         workplaceInventory = new Inventory(this);
         InventoryHandler.current.AddWorkplaceInventory(this);
+
     }
 
 }

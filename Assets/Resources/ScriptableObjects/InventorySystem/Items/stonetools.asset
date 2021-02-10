@@ -15,6 +15,7 @@ MonoBehaviour:
   itemPrefab: {fileID: 0}
   itemID: stonetools
   itemType: 0
+  itemResourceType: 12
   itemDescription: 
   itemUIicon: {fileID: 21300000, guid: 555d6ee630df961409c670a9a86adf4a, type: 3}
   itemUIiconColor: {r: 1, g: 1, b: 1, a: 1}

@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4083c9f1c4688db4a84b1d1d74d1f560, type: 3}
   m_Name: Warehouse
   m_EditorClassIdentifier: 
-  workID: warehouse
-  maxJobs: 1
-  workResourceTypes: 00000000
+  workJobType: 6
+  maxJobs: 2
+  workResourceTypes: 0e0000000b000000

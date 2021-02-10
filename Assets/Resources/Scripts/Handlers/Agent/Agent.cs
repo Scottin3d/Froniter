@@ -48,6 +48,7 @@ public class Agent : MonoBehaviour {
     public int currentInventoryCap;
 
     // working
+    public JobType agentJobType;
     public Job agentJob;
 
     private bool isGather = false;
@@ -74,9 +75,12 @@ public class Agent : MonoBehaviour {
         OnCollectingComplete += HandleOnCollectingComplete;
     }
 
-    public void InitializeAgent(ref Job mJob) {
+    public void InitializeAgent(ref Job mJob, JobType mJobType) {
         agentJob = mJob;
-        mJob.SetAgent(this);
+        agentJobType = mJobType;
+        if (mJob != null) { 
+            mJob.SetAgent(this);
+        }
         OnAgentStateChange?.Invoke(AgentState.Idle);
     }
 
@@ -183,9 +187,9 @@ public class Agent : MonoBehaviour {
         // Has Job?
         // TODO Wander while idle
         while (agentJob == null) {
-            Debug.Log("Job: " + "lumberjack" + " not availavle right not.");
+            Debug.Log("Job: " + agentJobType + " not availavle right not.");
             // TODO fix hard code
-            agentJob = JobHandler.current.GetAvailableJob("lumberjack");
+            agentJob = JobHandler.current.GetAvailableJob(agentJobType);
             yield return new WaitForSeconds(3f);
         }
         // get working node
@@ -193,6 +197,8 @@ public class Agent : MonoBehaviour {
         while (jobNode == null) {
             jobNode = ResourceHandler.current.GetResource(agentJob.JobObject.jobResources[0], out currentResouce);
             Debug.Log("No resources available.");
+            
+            
             yield return new WaitForSeconds(3f);
         }
         agentInventory.AddItem(currentResouce.itemObject, 0);

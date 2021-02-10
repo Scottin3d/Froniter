@@ -38,11 +38,11 @@ public class ResourceHandler : MonoBehaviour {
     }
 
     private void AddResource(Resource mResouce) {
-        if (resourcesByType.ContainsKey(mResouce.resourceType)) {
-            resourcesByType[mResouce.resourceType].Enqueue(mResouce);
+        if (resourcesByType.ContainsKey(mResouce.itemObject.itemResourceType)) {
+            resourcesByType[mResouce.itemObject.itemResourceType].Enqueue(mResouce);
         } else {
-            resourcesByType.Add(mResouce.resourceType, new Queue<Resource>());
-            resourcesByType[mResouce.resourceType].Enqueue(mResouce);
+            resourcesByType.Add(mResouce.itemObject.itemResourceType, new Queue<Resource>());
+            resourcesByType[mResouce.itemObject.itemResourceType].Enqueue(mResouce);
         }
     }
 
@@ -80,7 +80,7 @@ public class ResourceHandler : MonoBehaviour {
                     //cloneResource.resourceType = ResourceType.Wood;
                     cloneResource.OnResourceDestroyed += Resource_HandleOnResourceDestroy;
                     prefabClone.transform.localScale = Vector3.one * UnityEngine.Random.Range(0.5f, 2);
-                    prefabClone.name = "resourceNode: " + cloneResource.resourceType + inGameResources.transform.childCount;
+                    prefabClone.name = "resourceNode: " + cloneResource.itemObject.itemResourceType + inGameResources.transform.childCount;
 
                     // add to resource dictionary
                     AddResource(cloneResource);

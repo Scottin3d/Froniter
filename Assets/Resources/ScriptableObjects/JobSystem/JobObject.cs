@@ -2,20 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum JobType {
-    Default,
-    Lumberjack,
-    Gatherer,
-    Stonecutter
-
-}
-
 [CreateAssetMenu(fileName = "New Job Object", menuName = "Job System/Create Job")]
 public class JobObject : ScriptableObject
 {
 
    
-    public string jobID;
+    public JobType jobID;
     public ResourceType[] jobResources;
     public WorkPlace jobWorkplace;
     [TextArea(10, 15)]

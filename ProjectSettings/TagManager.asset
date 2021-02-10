@@ -6,6 +6,7 @@ TagManager:
   tags:
   - ground
   - agent
+  - workplace
   layers:
   - Default
   - TransparentFX

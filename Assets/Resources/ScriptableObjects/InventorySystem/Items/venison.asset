@@ -15,6 +15,7 @@ MonoBehaviour:
   itemPrefab: {fileID: 0}
   itemID: venson
   itemType: 1
+  itemResourceType: 13
   itemDescription: A prime cut from a fresh kill.  Moderately nutritious.
   itemUIicon: {fileID: 21300000, guid: 2dbf0385257406c4aa94219445f7237a, type: 3}
   itemUIiconColor: {r: 0.411, g: 0.1445799, b: 0.1445799, a: 1}

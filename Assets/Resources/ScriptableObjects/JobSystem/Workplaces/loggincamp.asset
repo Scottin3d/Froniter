@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4083c9f1c4688db4a84b1d1d74d1f560, type: 3}
   m_Name: loggincamp
   m_EditorClassIdentifier: 
-  workID: loggingcamp
+  workJobType: 10
   maxJobs: 3
-  workResourceTypes: 01000000
+  workResourceTypes: 0e000000

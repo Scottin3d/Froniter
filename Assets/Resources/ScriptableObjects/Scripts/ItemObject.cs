@@ -15,6 +15,7 @@ public abstract class ItemObject : ScriptableObject {
     public GameObject itemPrefab;
     public string itemID;
     public ItemType itemType;
+    public ResourceType itemResourceType;
     [TextArea(10,15)]
     public string itemDescription;
     public Sprite itemUIicon;

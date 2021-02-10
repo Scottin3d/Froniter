@@ -15,6 +15,7 @@ MonoBehaviour:
   itemPrefab: {fileID: 0}
   itemID: stone
   itemType: 2
+  itemResourceType: 11
   itemDescription: One of the basic building materials.
   itemUIicon: {fileID: 21300000, guid: 0a30266d1e7d48441a2943d8e97efa2f, type: 3}
   itemUIiconColor: {r: 0.3584906, g: 0.3584906, b: 0.3584906, a: 1}

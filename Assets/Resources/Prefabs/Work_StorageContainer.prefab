@@ -107,7 +107,7 @@ GameObject:
   - component: {fileID: 7274817165052167607}
   m_Layer: 0
   m_Name: Work_StorageContainer
-  m_TagString: Untagged
+  m_TagString: workplace
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -144,7 +144,6 @@ MonoBehaviour:
   prefab: {fileID: 8807577375868990413}
   PrefabAccessPoints: {fileID: 892318371445926774}
   jobObject: {fileID: 11400000, guid: 2766ac125fb07b547a53aedbed770d32, type: 2}
-  workJobs: []
   maxNumberOfJobs: 0
   openJobs: 0
 --- !u!1 &6645434513598119274

@@ -27,6 +27,6 @@ public class GameHandler : MonoBehaviour {
     }
 
     public Transform GetTarget(WorkObject mType) {
-        return JobHandler.current.GetTargetTransform(mType.workID);
+        return JobHandler.current.GetTargetTransform(mType.workJobType);
     }
 }

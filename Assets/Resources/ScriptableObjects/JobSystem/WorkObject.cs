@@ -6,7 +6,8 @@ using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Workplace Object", menuName = "Job System/Create Workplace")]
 public class WorkObject : ScriptableObject {
-    public string workID;
+    public JobType workJobType;
+    //public string workID;
     public int maxJobs;
     public ResourceType[] workResourceTypes;
 

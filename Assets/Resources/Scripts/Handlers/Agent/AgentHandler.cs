@@ -24,14 +24,25 @@ public class AgentHandler : MonoBehaviour
     }
 
     private void Update() {
-        if (Input.GetKeyDown(KeyCode.A)) {
-            GameObject agentClone = Instantiate<GameObject>(agentPrefab, inGameAgents);
-            Agent agent = agentClone.GetComponent<Agent>();
-            // TODO change hard coded
-            Job agentJob = JobHandler.current.GetAvailableJob("lumberjack");
-            agent.InitializeAgent(ref agentJob);
-            gameAgents.Add(agent);
-            OnAgentCreation?.Invoke(agent);
+        if (Input.GetKeyDown(KeyCode.L)) {
+            SpawnAgent(JobType.lumberjack);
         }
+
+        if (Input.GetKeyDown(KeyCode.G)) {
+            SpawnAgent(JobType.gatherer);
+        }
+    }
+
+    private void SpawnAgent(JobType job) {
+        GameObject agentClone = Instantiate<GameObject>(agentPrefab, inGameAgents);
+        agentClone.name = "Agent" + gameAgents.Count + "." + job;
+        Agent agent = agentClone.GetComponent<Agent>();
+        // TODO change hard coded
+        //Job agentJob = JobHandler.current.GetAvailableJob(job);
+        Job agentJob = null;
+        agent.InitializeAgent(ref agentJob, job);
+        gameAgents.Add(agent);
+        OnAgentCreation?.Invoke(agent);
+
     }
 }

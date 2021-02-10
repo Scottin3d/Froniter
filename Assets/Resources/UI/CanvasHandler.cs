@@ -5,7 +5,9 @@ using TMPro;
 using System;
 
 public class CanvasHandler : MonoBehaviour {
-    public event Action<bool, Agent> OnClick;
+    public event Action<bool, Agent> OnAgentClick;
+    public event Action<bool, WorkPlace> OnWorkplaceClick;
+
 
     public static CanvasHandler instance;
 
@@ -40,16 +42,27 @@ public class CanvasHandler : MonoBehaviour {
         if (Input.GetMouseButtonDown(0)) { 
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out var hit)) {
-                if (hit.collider.CompareTag("agent")) {
-                    OnClick?.Invoke(true, hit.transform.GetComponent<Agent>());
-                } else { 
-                    OnClick?.Invoke(false, null);
-                }
-            }
+                Clickable(hit);
+             }
         
         }
         
     }
+
+    private void Clickable(RaycastHit mHit) {
+        string mTag = mHit.collider.tag;
+        switch (mTag) {
+            case "agent":
+                OnAgentClick?.Invoke(true, mHit.transform.GetComponent<Agent>());
+                return;
+            case "workplace":
+                return;
+            default:
+                OnAgentClick?.Invoke(false, null);
+                return;
+        }
+    }
+
     private void AgentHandler_HandleOnAgentCreation(Agent mAgent) {
         mAgent.OnInventoryChange += Agent_HandleOnInventoryChange;
     }

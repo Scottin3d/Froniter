@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6da4d0a2e1c86dd44ba2b00b42474c53, type: 3}
   m_Name: LumberJack
   m_EditorClassIdentifier: 
-  jobID: lumberjack
-  jobResources: 01000000
+  jobID: 10
+  jobResources: 0e000000
   jobWorkplace: {fileID: 0}
   jobDescription: 
   jobUIicon: {fileID: 21300000, guid: 6697ae767271dca4fb445f25accee860, type: 3}
