@@ -11,7 +11,7 @@ public class WorkPlace : MonoBehaviour {
     public WorkObject workObject = null;
     public GameObject prefab = null;
     public Transform PrefabAccessPoints = null;
-
+    private GameObject[] accessPoints;
     public JobObject jobObject;
     public Inventory workplaceInventory;
     [SerializeField] private Job[] workJobs;
@@ -36,24 +36,32 @@ public class WorkPlace : MonoBehaviour {
 
         for (int i = 0; i < maxNumberOfJobs; i++) {
             workJobs[i] = new Job(Instantiate<JobObject>(jobObject, transform), this);
-            JobHandler.current.CreateJob(jobObject.jobID, workJobs[i]);
+            workJobs[i].JobObject.SetWorkplace(this);
+            JobHandler.current.CreateJob(jobObject.ID, workJobs[i]);
         }
 
         // init open jobs
         openJobs = maxNumberOfJobs;
 
         // init access points
-        GameObject[] points = new GameObject[maxNumberOfJobs];
-        for (int i = 0; i < PrefabAccessPoints.childCount; i++) {
-            points[i] = PrefabAccessPoints.GetChild(i).gameObject;
+        accessPoints = new GameObject[PrefabAccessPoints.childCount];
+        for (int i = 0; i < accessPoints.Length; i++) {
+            accessPoints[i] = PrefabAccessPoints.GetChild(i).gameObject;
         }
-
-        workObject.InitWorkObject(transform, points);
 
         // init inventory
         workplaceInventory = new Inventory(this);
         InventoryHandler.current.AddWorkplaceInventory(this);
 
+        // populate inventory
+        foreach (var r in jobObject.resources) {
+            workplaceInventory.AddItem(new InventorySlot(r, 0));
+        }
+
+    }
+
+    public Transform GetAccessPoint() {
+        return accessPoints[0].transform;
     }
 
 }

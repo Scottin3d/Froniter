@@ -37,6 +37,7 @@ public class AgentHandler : MonoBehaviour
         GameObject agentClone = Instantiate<GameObject>(agentPrefab, inGameAgents);
         agentClone.name = "Agent" + gameAgents.Count + "." + job;
         Agent agent = agentClone.GetComponent<Agent>();
+        agent.SetHome(transform);
         // TODO change hard coded
         //Job agentJob = JobHandler.current.GetAvailableJob(job);
         Job agentJob = null;

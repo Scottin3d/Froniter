@@ -46,8 +46,8 @@ public class UIAgentInfo : MonoBehaviour {
             mAgent.OnEnergyChange += HandleEnergyChange;
             agentName.text = mAgent.agentJobType.ToString();
             agentNameCC.text = agentName.text;
-            icon.sprite = mAgent.agentJob.JobObject.jobUIicon;
-            icon.color = mAgent.agentJob.JobObject.jobUIiconColor;
+            icon.sprite = mAgent.agentJob.JobObject.UIicon;
+            icon.color = mAgent.agentJob.JobObject.UIiconColor;
             iconCC.sprite = icon.sprite;
             job.text = mAgent.agentJobType.ToString();
             jobCC.text = job.text; ;

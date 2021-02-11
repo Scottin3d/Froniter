@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8181879168370870515}
   - component: {fileID: 2501563407734535178}
   - component: {fileID: 7594012223008755393}
+  - component: {fileID: 1179691142081071370}
   m_Layer: 0
   m_Name: Wooden Pile 1
   m_TagString: Untagged
@@ -55,6 +56,8 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -79,6 +82,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!64 &7594012223008755393
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -89,7 +93,23 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 2929896333077086512, guid: 40edd34a44a29a24bb22827fa7f5d31e, type: 3}
+--- !u!208 &1179691142081071370
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4218606930319622358}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.61300004, y: 0.223, z: 0.42600003}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0.21700001, z: 0}
+  m_TimeToStationary: 0.5

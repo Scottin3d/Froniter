@@ -11,7 +11,7 @@ public class Agent : MonoBehaviour {
     public event Action<int> OnCollect; // work node
 
     public event Action<int> OnInventoryChange; // to canvas handler
-    public event Action<string, InventorySlot> OnInventoryDrop; // to inventory handler
+    public event Action<ResourceType, InventorySlot> OnInventoryDrop; // to inventory handler
     public event Action<int> OnEnergyChange; // for UI
 
     // private events
@@ -37,6 +37,7 @@ public class Agent : MonoBehaviour {
     [SerializeField] private Resource currentResouce = null;
     [SerializeField] private Transform targetNode = null;
 
+    private bool atHome = false;
     [SerializeField] Transform homeNode = null;
 
     // patth debug
@@ -87,9 +88,9 @@ public class Agent : MonoBehaviour {
     private void Update() {
         // set local variables
         if (currentResouce && (agentInventory.Container.Count > 0)) {
-            agentInventory.Contains(currentResouce.itemObject.itemID);
-            currentInventory = agentInventory.Container[currentResouce.itemObject.itemID].ItemCount;
-            currentInventoryCap = agentInventory.Container[currentResouce.itemObject.itemID].MaxCount;
+            agentInventory.Contains(currentResouce.itemObject.itemResourceType);
+            currentInventory = agentInventory.Container[currentResouce.itemObject.itemResourceType].ItemCount;
+            currentInventoryCap = agentInventory.Container[currentResouce.itemObject.itemResourceType].MaxCount;
         }
 
         agentDistanceToTarget = Vector3.Distance(agent.transform.position, agent.destination);
@@ -121,35 +122,33 @@ public class Agent : MonoBehaviour {
                 StartCoroutine(AgentRest());
                 return;
             case AgentState.MovingToNode:
-                lastState = AgentState.Working;
+                //lastState = AgentState.Working;
                 StartCoroutine(MoveToNode(jobNode));
                 return;
             case AgentState.Working:
                 DoWork();
                 return;
             case AgentState.MovingToTarget:
-                lastState = AgentState.Delivering;
+                //lastState = AgentState.Delivering;
                 StartCoroutine(MoveToNode(agentJob.JobWorkPlace.PrefabAccessPoints));
                 //StartCoroutine(MoveToTarget(agentJob.JobWorkPlace.PrefabAccessPoints));
                 return;
             case AgentState.Delivering:
                 DeliverItems();
-                lastState = AgentState.Idle;
+                //lastState = AgentState.Idle;
                 OnAgentStateChange?.Invoke(AgentState.Idle);
                 //StartCoroutine(MoveToNode(jobNode));
+                return;
+            case AgentState.MovingHome:
+                //lastState = AgentState.Idle;
+                StartCoroutine(MoveToNode(homeNode));
                 return;
             default:
                 return;
         }
     }
 
-    private void GoHome() {
-        if (homeNode) {
-            agent.SetDestination(homeNode.position);
-        } else {
-            agent.SetDestination(AgentHandler.current.transform.position);
-        }
-    }
+    
 
     // https://answers.unity.com/questions/324589/how-can-i-tell-when-a-navmesh-has-reached-its-dest.html
     private bool pathComplete() {
@@ -167,14 +166,15 @@ public class Agent : MonoBehaviour {
 
     private void Resource_HandleOnGather(int c) {
         // Debug.Log(c + " added to player inventory.");
-        if (agentInventory.Contains(workingInventorySlot.itemID)) {
-            agentInventory.Container[workingInventorySlot.itemID].AddItemCount(out var mAmount, c);
-            OnInventoryChange?.Invoke(agentInventory.Container[workingInventorySlot.itemID].ItemCount);
+        if (agentInventory.Contains(workingInventorySlot.itemResourceType)) {
+            agentInventory.Container[workingInventorySlot.itemResourceType].AddItemCount(out var mAmount, c);
+            OnInventoryChange?.Invoke(agentInventory.Container[workingInventorySlot.itemResourceType].ItemCount);
         }
     }
 
     private void HandleOnCollectingComplete() {
         jobNode = null;
+        lastState = AgentState.Delivering;
         OnAgentStateChange?.Invoke(AgentState.MovingToTarget);
     }
 
@@ -194,45 +194,28 @@ public class Agent : MonoBehaviour {
         }
         // get working node
         jobNode = null;
+        int waitCycles = 0;
         while (jobNode == null) {
-            jobNode = ResourceHandler.current.GetResource(agentJob.JobObject.jobResources[0], out currentResouce);
+            if (waitCycles > 5 && !atHome) {
+                atHome = true;
+                lastState = AgentState.Idle;
+                OnAgentStateChange?.Invoke(AgentState.MovingHome);
+                yield break;
+            }
+            jobNode = ResourceHandler.current.GetResource(agentJob.JobObject.resources[0].itemResourceType, out currentResouce);
             Debug.Log("No resources available.");
             
             
             yield return new WaitForSeconds(3f);
+            waitCycles++;
         }
         agentInventory.AddItem(currentResouce.itemObject, 0);
         workingInventorySlot = currentResouce.itemObject;
         SetWorkingNode();
+        atHome = false;
+        lastState = AgentState.Working;
         OnAgentStateChange?.Invoke(AgentState.MovingToNode);
         yield return null;
-        /*
-        if (jobNode) {
-            // return to node if has one
-            state = AgentState.MovingToNode;
-            Vector3 gatherPosition = jobNode.position;
-            agent.SetDestination(gatherPosition);
-        } else {
-            // TODO job resource priority
-            // check for new job
-            // get type of resource needed by 
-            jobNode = ResourceHandler.current.GetResource(agentJob.JobObject.jobResources[0], out currentResouce);
-
-            // any jobs available? 
-            if (jobNode) {
-                // add to agent inventory
-                workingInventorySlot = currentResouce.itemObject;
-                agentInventory.AddItem(workingInventorySlot, 0);
-                SetWorkingNode();
-                OnAgentStateChange?.Invoke(AgentState.MovingToNode);
-            } else {
-                lastState = AgentState.Working;
-                StartCoroutine(MoveToNode(agentJob.JobWorkPlace.PrefabAccessPoints));
-                // go home
-                GoHome();
-            }
-        }
-        */
     }
     #endregion
     #region AgentState.Rest
@@ -261,6 +244,7 @@ public class Agent : MonoBehaviour {
         yield break;
     }
     #endregion
+
     #region AgentState.Working
     private void DoWork() {
         OnWorking?.Invoke(true);
@@ -269,14 +253,12 @@ public class Agent : MonoBehaviour {
     }
 
     IEnumerator Working() {
-        /*
-        
-        */
         isGather = true;
         while (!currentResouce.isGatherComplete) {
             // check inventory level
             if (IsInventoryFull()) {
                 Debug.Log("Inventory full.");
+                lastState = AgentState.Delivering;
                 OnAgentStateChange?.Invoke(AgentState.MovingToTarget);
                 yield break;
             }
@@ -285,6 +267,7 @@ public class Agent : MonoBehaviour {
             if (agentEnergy < (agentEnergy * 0.1f)) {
                 lastState = AgentState.Rest;
                 // go home to rest
+                lastState = AgentState.Idle; // TODO
                 OnAgentStateChange?.Invoke(AgentState.Rest);
                 yield break;
             }
@@ -296,8 +279,8 @@ public class Agent : MonoBehaviour {
                 if (currentResouce.resourceCount > 0) {
                     yield return new WaitForSeconds(currentResouce.gatherInterval);
                     // add resource to inventory
-                    if (agentInventory.Contains(workingInventorySlot.itemID)) {
-                        agentInventory.Container[workingInventorySlot.itemID].AddItemCount(out var mAmount, 1);
+                    if (agentInventory.Contains(workingInventorySlot.itemResourceType)) {
+                        agentInventory.Container[workingInventorySlot.itemResourceType].AddItemCount(out var mAmount, 1);
                         //OnInventoryChange?.Invoke(agentInventory.Container[workingInventorySlot.itemID].ItemCount);
                     }
                     currentResouce.resourceCount--;
@@ -326,18 +309,27 @@ public class Agent : MonoBehaviour {
     #region AgentState.Delivering
     private void DeliverItems() {
         // add to workplace inventory
-        agentJob.JobWorkPlace.workplaceInventory.AddItem(agentInventory.Container[workingInventorySlot.itemID]);
+        agentJob.JobWorkPlace.workplaceInventory.AddItem(agentInventory.Container[workingInventorySlot.itemResourceType]);
         // remove from agent inventory
-        agentInventory.Container[workingInventorySlot.itemID].AddItemCount(out var mAmount, -currentInventory);
+        agentInventory.Container[workingInventorySlot.itemResourceType].AddItemCount(out var mAmount, -currentInventory);
         // invoke ui events
-        OnInventoryDrop?.Invoke(workingInventorySlot.itemID, agentInventory.Container[workingInventorySlot.itemID]);
+        OnInventoryDrop?.Invoke(workingInventorySlot.itemResourceType, agentInventory.Container[workingInventorySlot.itemResourceType]);
         OnInventoryChange?.Invoke(currentInventory);
+        lastState = AgentState.Idle;
         // TODO max number of inventory slots
         // remove item from inventory
     }
     #endregion
 
     #region Helper Functions
+    private void GoHome() {
+        
+        if (homeNode) {
+            agent.SetDestination(homeNode.position);
+        } else {
+            agent.SetDestination(AgentHandler.current.transform.position);
+        }
+    }
     private void SetWorkingNode() {
         currentResouce = jobNode.GetComponent<Resource>();
         currentResouce.Initialized(this);
@@ -350,8 +342,8 @@ public class Agent : MonoBehaviour {
     }
 
     private bool IsInventoryFull() {
-        if (agentInventory.Contains(workingInventorySlot.itemID)) {
-            return agentInventory.Container[workingInventorySlot.itemID].ItemCount >= agentInventory.Container[workingInventorySlot.itemID].MaxCount;
+        if (agentInventory.Contains(workingInventorySlot.itemResourceType)) {
+            return agentInventory.Container[workingInventorySlot.itemResourceType].ItemCount >= agentInventory.Container[workingInventorySlot.itemResourceType].MaxCount;
         }
 
         return false;
@@ -361,6 +353,10 @@ public class Agent : MonoBehaviour {
         for (int i = 0; i < pathPoints.Length - 1; i++) {
             Debug.DrawLine(pathPoints[i], pathPoints[i + 1], Color.green);
         }
+    }
+
+    public void SetHome(Transform mHome) {
+        homeNode = mHome;
     }
     #endregion
 }

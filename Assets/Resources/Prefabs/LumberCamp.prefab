@@ -86,6 +86,22 @@ MonoBehaviour:
   jobObject: {fileID: 11400000, guid: 046a7f5cf36f7d04bb396664d5253451, type: 2}
   maxNumberOfJobs: 0
   openJobs: 0
+--- !u!208 &3381053210191305651
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8408318138311815756}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 0
+  m_Extents: {x: 0.32500002, y: 0.07700001, z: 0.32500002}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: -0.002, y: 0.07700001, z: 0.002}
+  m_TimeToStationary: 0.5
 --- !u!1001 &1513789990024324914
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -279,6 +295,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 79b37300660b2bb4589f29a5c19e1590, type: 3}
+--- !u!1 &8408318138311815756 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5349401489378594168, guid: 79b37300660b2bb4589f29a5c19e1590, type: 3}
+  m_PrefabInstance: {fileID: 4507184601673236276}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4821949015184261215 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8964342039555456875, guid: 79b37300660b2bb4589f29a5c19e1590, type: 3}

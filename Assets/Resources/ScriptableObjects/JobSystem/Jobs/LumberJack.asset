@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6da4d0a2e1c86dd44ba2b00b42474c53, type: 3}
   m_Name: LumberJack
   m_EditorClassIdentifier: 
-  jobID: 10
-  jobResources: 0e000000
-  jobWorkplace: {fileID: 0}
-  jobDescription: 
-  jobUIicon: {fileID: 21300000, guid: 6697ae767271dca4fb445f25accee860, type: 3}
-  jobUIiconColor: {r: 1, g: 1, b: 1, a: 1}
+  ID: 10
+  resources:
+  - {fileID: 11400000, guid: 7a7b413ab0b09004588826f31fe5b76b, type: 2}
+  description: 
+  UIicon: {fileID: 0}
+  UIiconColor: {r: 0, g: 0, b: 0, a: 0}

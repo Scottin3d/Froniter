@@ -7,20 +7,28 @@ public class JobObject : ScriptableObject
 {
 
    
-    public JobType jobID;
-    public ResourceType[] jobResources;
-    public WorkPlace jobWorkplace;
+    public JobType ID;
+    public ItemObject[] resources;
+    private WorkPlace workplace;
     [TextArea(10, 15)]
-    public string jobDescription;
-    public Sprite jobUIicon;
-    public Color jobUIiconColor = Color.white;
+    public string description;
+    public Sprite UIicon;
+    public Color UIiconColor = Color.white;
+
+    public WorkPlace JobWorkplace { get => workplace; set => workplace = value; }
 
     public JobObject(JobObject mJobObj) {
-        this.jobID = mJobObj.jobID;
-        this.jobResources = mJobObj.jobResources;
-        this.jobWorkplace = mJobObj.jobWorkplace;
-        this.jobDescription = mJobObj.jobDescription;
-        this.jobUIicon = mJobObj.jobUIicon;
-        this.jobUIiconColor = mJobObj.jobUIiconColor;
+        ID = mJobObj.ID;
+        resources = mJobObj.resources;
+        JobWorkplace = mJobObj.JobWorkplace;
+        description = mJobObj.description;
+        UIicon = mJobObj.UIicon;
+        UIiconColor = mJobObj.UIiconColor;
     }
+
+    public void SetWorkplace(WorkPlace mWorkplace) {
+        JobWorkplace = mWorkplace;
+    }
+
+
 }

@@ -45,7 +45,7 @@ public class InventoryHandler : MonoBehaviour {
         mAgent.OnInventoryDrop += Agent_HandleOnIventoryDrop;
     }
 
-    private void Agent_HandleOnIventoryDrop(string mID, InventorySlot mSlot) {
+    private void Agent_HandleOnIventoryDrop(ResourceType mID, InventorySlot mSlot) {
         
     }
 

@@ -9,24 +9,26 @@ public class WorkObject : ScriptableObject {
     public JobType workJobType;
     //public string workID;
     public int maxJobs;
-    public ResourceType[] workResourceTypes;
+    //public ResourceType[] workResourceTypes;
 
     private Transform workLoc = null;
-    private GameObject[] workAccessPoints;
+    //private GameObject[] workAccessPoints;
 
     private bool init = false;
     public void InitWorkObject(Transform mLoc, GameObject[] mAccessPoints) {
         if (!init) {
             workLoc = mLoc;
-            workAccessPoints = mAccessPoints;
+            //workAccessPoints = mAccessPoints;
 
             init = true;
         }
     }
 
+    /*
     public Transform GetAccessPoint() {
         return workAccessPoints[0].transform;
     }
+    */
 
 
 }

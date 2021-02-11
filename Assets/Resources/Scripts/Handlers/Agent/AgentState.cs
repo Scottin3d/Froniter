@@ -6,4 +6,5 @@ public enum AgentState {
     MovingToTarget,
     Working,
     Delivering,
+    MovingHome,
 }

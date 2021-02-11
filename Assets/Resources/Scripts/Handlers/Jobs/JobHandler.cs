@@ -88,7 +88,7 @@ public class JobHandler : MonoBehaviour {
         // check diction for type
         // return first
         if (workPlaces.ContainsKey(mType)) {
-            return workPlaces[mType][0].workObject.GetAccessPoint();
+            return workPlaces[mType][0].GetAccessPoint();
         }
 
         return null;
