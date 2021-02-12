@@ -13,7 +13,7 @@ public class ResourceHandler : MonoBehaviour {
     public event Action<bool> OnJobsAvailable;
 
     // containers
-    [SerializeField] Transform inGameResources = null;
+    [SerializeField] public Transform inGameResources = null;
     Dictionary<ResourceType, Queue<Resource>> resourcesByType = new Dictionary<ResourceType, Queue<Resource>>();
     Dictionary<ResourceType, GameObject> deadResources = new Dictionary<ResourceType, GameObject>();
 
@@ -94,7 +94,8 @@ public class ResourceHandler : MonoBehaviour {
     }
 
     private void Resource_HandleOnResourceDestroy(GameObject mResourceType, Transform mTransform) {
-        GameObject deadResource = Instantiate<GameObject>(mResourceType, mTransform.position, mTransform.rotation, inGameResources);
+        //GameObject deadResource = Instantiate<GameObject>(mResourceType, mTransform.position, Quaternion.identity, inGameResources);
+        //deadResource.transform.localScale = mTransform.localScale;
     }
 
 

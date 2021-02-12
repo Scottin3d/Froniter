@@ -8,6 +8,7 @@ using UnityEngine.AI;
 public class Agent : MonoBehaviour {
     // event actions
     public event Action<bool> OnWorking; // work node
+    public event Action OnPrepComplete; // work node
     public event Action<int> OnCollect; // work node
 
     public event Action<int> OnInventoryChange; // to canvas handler
@@ -24,6 +25,7 @@ public class Agent : MonoBehaviour {
     // containers
     public Inventory agentInventory;
 
+    [SerializeField] public AgentObject agentObject;
     [SerializeField] private AgentState state;
     [SerializeField] private ItemObject workingInventorySlot = null;
 
@@ -31,7 +33,7 @@ public class Agent : MonoBehaviour {
     public float agentStoppingDistance = 1f;
     [SerializeField] private float agentDistanceToTarget;
     public bool atDestination = false;
-    private AgentState lastState;
+    private AgentState nextState;
     private Vector3 lastDestination;
     [SerializeField] private Transform jobNode = null;
     [SerializeField] private Resource currentResouce = null;
@@ -56,10 +58,11 @@ public class Agent : MonoBehaviour {
     private bool isGatherComplete = false;
     private float workTime = 1f;
 
-    [SerializeField] private float agentMaxEnergy = 60f;
-    [SerializeField] private float agentEnergy;
-    [SerializeField] private float energyIncriment;
-    private float rechargeRate = 0.05f;
+    //[SerializeField] private float agentMaxEnergy = 60f;  // move to object
+    // local energy variable
+    [SerializeField] private float agentEnergy; // move to object
+    //[SerializeField] private float energyIncriment; // move to object
+    //private float rechargeRate = 0.05f;  // move to object
 
 
     private void Awake() {
@@ -68,20 +71,25 @@ public class Agent : MonoBehaviour {
         state = AgentState.Idle;
         agentInventory = new Inventory(this);
         InventoryHandler.current.AddAgentInventory(this);
-        agentEnergy = agentMaxEnergy;
-        energyIncriment = agentEnergy / 5;
+        
         agent.stoppingDistance = agentStoppingDistance;
 
         OnAgentStateChange += HandleOnAgentStateChange;
         OnCollectingComplete += HandleOnCollectingComplete;
     }
 
-    public void InitializeAgent(ref Job mJob, JobType mJobType) {
+    public void InitializeAgent(AgentObject mAgent, ref Job mJob, JobType mJobType) {
+        agentObject = mAgent;
         agentJob = mJob;
         agentJobType = mJobType;
         if (mJob != null) { 
             mJob.SetAgent(this);
         }
+
+        // init energy levels
+        agentEnergy = mAgent.agentMaxEnergy;
+        
+        // finish init and send to the world
         OnAgentStateChange?.Invoke(AgentState.Idle);
     }
 
@@ -107,8 +115,8 @@ public class Agent : MonoBehaviour {
         GetPath();
 
         // update agent engery display
-        if ((int)agentEnergy % energyIncriment == 0) {
-            OnEnergyChange?.Invoke((int)(agentEnergy / energyIncriment));
+        if ((int)agentEnergy % agentObject.energyIncriment == 0) {
+            OnEnergyChange?.Invoke((int)(agentEnergy / agentObject.energyIncriment));
         }
     }
 
@@ -152,7 +160,7 @@ public class Agent : MonoBehaviour {
 
     // https://answers.unity.com/questions/324589/how-can-i-tell-when-a-navmesh-has-reached-its-dest.html
     private bool pathComplete() {
-        if (Vector3.Distance(agent.destination, agent.transform.position) <= agent.stoppingDistance * 3f) {
+        if (Vector3.Distance(agent.destination, agent.transform.position) <= agent.stoppingDistance * 2f) {
             return true;
         }
         return false;
@@ -174,7 +182,7 @@ public class Agent : MonoBehaviour {
 
     private void HandleOnCollectingComplete() {
         jobNode = null;
-        lastState = AgentState.Delivering;
+        nextState = AgentState.Delivering;
         OnAgentStateChange?.Invoke(AgentState.MovingToTarget);
     }
 
@@ -198,7 +206,7 @@ public class Agent : MonoBehaviour {
         while (jobNode == null) {
             if (waitCycles > 5 && !atHome) {
                 atHome = true;
-                lastState = AgentState.Idle;
+                nextState = AgentState.Idle;
                 OnAgentStateChange?.Invoke(AgentState.MovingHome);
                 yield break;
             }
@@ -213,15 +221,15 @@ public class Agent : MonoBehaviour {
         workingInventorySlot = currentResouce.itemObject;
         SetWorkingNode();
         atHome = false;
-        lastState = AgentState.Working;
+        nextState = AgentState.Working;
         OnAgentStateChange?.Invoke(AgentState.MovingToNode);
         yield return null;
     }
     #endregion
     #region AgentState.Rest
     IEnumerator AgentRest() {
-        while (agentEnergy <= agentMaxEnergy) {
-            agentEnergy += rechargeRate;
+        while (agentEnergy <= agentObject.agentMaxEnergy) {
+            agentEnergy += agentObject.rechargeRate;
             yield return new WaitForFixedUpdate();
         }
         OnAgentStateChange?.Invoke(AgentState.Working);
@@ -240,7 +248,7 @@ public class Agent : MonoBehaviour {
         }
         Debug.Log("Arrived at target.");
 
-        OnAgentStateChange?.Invoke(lastState);
+        OnAgentStateChange?.Invoke(nextState);
         yield break;
     }
     #endregion
@@ -258,16 +266,16 @@ public class Agent : MonoBehaviour {
             // check inventory level
             if (IsInventoryFull()) {
                 Debug.Log("Inventory full.");
-                lastState = AgentState.Delivering;
+                nextState = AgentState.Delivering;
                 OnAgentStateChange?.Invoke(AgentState.MovingToTarget);
                 yield break;
             }
 
             //check energy level
             if (agentEnergy < (agentEnergy * 0.1f)) {
-                lastState = AgentState.Rest;
+                nextState = AgentState.Rest;
                 // go home to rest
-                lastState = AgentState.Idle; // TODO
+                nextState = AgentState.Idle; // TODO
                 OnAgentStateChange?.Invoke(AgentState.Rest);
                 yield break;
             }
@@ -297,6 +305,7 @@ public class Agent : MonoBehaviour {
                 Debug.Log("Preping to work.");
                 // prep
                 yield return new WaitForSeconds(currentResouce.timeToPrep);
+                OnPrepComplete?.Invoke();
                 currentResouce.gather = true;
                 Debug.Log("Preping complete.");
             }
@@ -315,7 +324,7 @@ public class Agent : MonoBehaviour {
         // invoke ui events
         OnInventoryDrop?.Invoke(workingInventorySlot.itemResourceType, agentInventory.Container[workingInventorySlot.itemResourceType]);
         OnInventoryChange?.Invoke(currentInventory);
-        lastState = AgentState.Idle;
+        nextState = AgentState.Idle;
         // TODO max number of inventory slots
         // remove item from inventory
     }

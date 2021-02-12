@@ -44,7 +44,7 @@ public class UIAgentInfo : MonoBehaviour {
 
         if (mSelected && mAgent) {
             mAgent.OnEnergyChange += HandleEnergyChange;
-            agentName.text = mAgent.agentJobType.ToString();
+            agentName.text = mAgent.agentObject.FirstName + " " + mAgent.agentObject.LastName;
             agentNameCC.text = agentName.text;
             icon.sprite = mAgent.agentJob.JobObject.UIicon;
             icon.color = mAgent.agentJob.JobObject.UIiconColor;
@@ -57,9 +57,13 @@ public class UIAgentInfo : MonoBehaviour {
     }
 
     public void HandleEnergyChange(int mEngery) {
+        foreach (Transform c in agentEnergy) {
+            c.GetComponent<Image>().enabled = true;
+        }
+
         if (mEngery >= 0) {
             for (int i = agentEnergy.childCount; i > mEngery; i--) {
-                agentEnergy.GetChild(i - 1).gameObject.SetActive(false);
+                agentEnergy.GetChild(i - 1).gameObject.GetComponent<Image>().enabled = false;
             }
         }
         

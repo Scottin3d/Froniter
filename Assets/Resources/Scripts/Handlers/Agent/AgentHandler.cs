@@ -15,7 +15,7 @@ public class AgentHandler : MonoBehaviour
     public Transform inGameAgents = null;
     [SerializeField] GameObject agentPrefab = null;
     [SerializeField] List<Agent> gameAgents = new List<Agent>();
-
+    public AgentObject[] agentObjects = new AgentObject[2];
 
     private void Awake() {
         current = this;
@@ -25,15 +25,15 @@ public class AgentHandler : MonoBehaviour
 
     private void Update() {
         if (Input.GetKeyDown(KeyCode.L)) {
-            SpawnAgent(JobType.lumberjack);
+            SpawnAgent(Instantiate(agentObjects[0]), JobType.lumberjack);
         }
 
         if (Input.GetKeyDown(KeyCode.G)) {
-            SpawnAgent(JobType.gatherer);
+            SpawnAgent(Instantiate(agentObjects[0]), JobType.gatherer);
         }
     }
 
-    private void SpawnAgent(JobType job) {
+    private void SpawnAgent(AgentObject mAgentObject, JobType job) {
         GameObject agentClone = Instantiate<GameObject>(agentPrefab, inGameAgents);
         agentClone.name = "Agent" + gameAgents.Count + "." + job;
         Agent agent = agentClone.GetComponent<Agent>();
@@ -41,7 +41,12 @@ public class AgentHandler : MonoBehaviour
         // TODO change hard coded
         //Job agentJob = JobHandler.current.GetAvailableJob(job);
         Job agentJob = null;
-        agent.InitializeAgent(ref agentJob, job);
+
+        // int object
+        mAgentObject.InitObject();
+        agent.InitializeAgent(mAgentObject, ref agentJob, job);
+
+        // init class
         gameAgents.Add(agent);
         OnAgentCreation?.Invoke(agent);
 

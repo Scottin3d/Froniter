@@ -12,8 +12,9 @@ GameObject:
   - component: {fileID: 4661435515761518820}
   - component: {fileID: 4661435515760519716}
   - component: {fileID: 7066901430696497906}
-  - component: {fileID: 1459868894914331960}
   - component: {fileID: 8461146502305421159}
+  - component: {fileID: 8930546925803647055}
+  - component: {fileID: 1459868894914331960}
   m_Layer: 0
   m_Name: TreeNode
   m_TagString: Untagged
@@ -91,35 +92,13 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4661435515762455780}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: ad8e61ae33993dd4aa6b259c6a1b796c, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.8490801
   m_Height: 4.2180724
   m_Direction: 1
   m_Center: {x: -0.01845619, y: 2.092121, z: -0.003755778}
---- !u!114 &1459868894914331960
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4661435515762455780}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 995e2f8169b1d594c994987d4b5898b7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  resourceType: 1
-  itemObject: {fileID: 11400000, guid: 7a7b413ab0b09004588826f31fe5b76b, type: 2}
-  resourceCount: 5
-  gatherInterval: 0.5
-  timeToPrep: 1
-  deadPrefab: {fileID: 4766159044075265432, guid: 32143005600a5fd4e9c1ac4fbf81b953, type: 3}
-  agent: {fileID: 0}
-  gather: 0
-  isGatherComplete: 0
-  working: 0
 --- !u!208 &8461146502305421159
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -136,3 +115,40 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: -0.018000001, y: 2.092, z: -0.004}
   m_TimeToStationary: 0.5
+--- !u!54 &8930546925803647055
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4661435515762455780}
+  serializedVersion: 2
+  m_Mass: 2
+  m_Drag: 0.5
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!114 &1459868894914331960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4661435515762455780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 995e2f8169b1d594c994987d4b5898b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemObject: {fileID: 11400000, guid: 7a7b413ab0b09004588826f31fe5b76b, type: 2}
+  resourceCount: 15
+  gatherInterval: 3
+  timeToPrep: 5
+  deadPrefab: {fileID: 4766159044075265432, guid: 32143005600a5fd4e9c1ac4fbf81b953, type: 3}
+  agent: {fileID: 0}
+  gather: 0
+  isGatherComplete: 0
+  working: 0
