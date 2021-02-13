@@ -1,5 +1,6 @@
 ﻿
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,10 +8,13 @@ using UnityEngine;
 
 public class PlaneMeshMaker : MonoBehaviour {
     public static PlaneMeshMaker current;
-
+    public List<Vector2Int> pixels = new List<Vector2Int>();
+    /*global
+     */
     public Texture2D heightmap;
     public Material groundMaterial;
     public float planeSize = 20;
+
     int size;
     [SerializeField] float cellSize;
     [SerializeField] float ZcellSize;
@@ -20,6 +24,20 @@ public class PlaneMeshMaker : MonoBehaviour {
     [Range(0.1f, 100f)]
     public float worldHeight = 1f;
 
+    /*Chunk
+     */
+    private int chunkResolution;
+    private int chunkSize;
+    private GameObject[] chunkObjects;
+    private Mesh[] chunkMeshs;
+    private MeshFilter[] chunkFilters;
+    private MeshRenderer[] chunkRenderers;
+    private int[][] chunkTriangles;
+    private Vector3[][] chunkVertices;
+    private Vector2[][] chunkUVs;
+
+    /*Single
+     */
     Mesh mesh;
     MeshFilter mf;
     MeshRenderer mr;
@@ -28,27 +46,149 @@ public class PlaneMeshMaker : MonoBehaviour {
     private Vector3[] vertices;
     private Vector2[] uvs;
 
+    private void FixedUpdate() {
+        if (Input.GetKeyDown(KeyCode.M)) {
+            CreateChunkPlane();
+            UpdateChunkMesh();
+        }
+    }
+
     private void Start() {
+        /*global
+         */
+        size = (int)planeSize;
+        imgW = heightmap.width;
+        imgH = heightmap.height;
+        chunkResolution = 32;
+        chunkSize = imgW / chunkResolution; // 32
+        cellSize = planeSize / imgW;
+        ZcellSize = planeSize / imgH;
+        /*Chunk
+         */
+        chunkObjects =  new GameObject[chunkSize * chunkSize];
+        chunkMeshs =  new Mesh[chunkSize * chunkSize];
+        chunkFilters = new MeshFilter[chunkSize * chunkSize];
+        chunkRenderers = new MeshRenderer[chunkSize * chunkSize];
+
+        InitChunks();
+
+        CreateChunkPlane();
+        UpdateChunkMesh();
+
+        /*Single
+         */
+        mesh = new Mesh();
         mr = GetComponent<MeshRenderer>();
         mf = GetComponent<MeshFilter>();
 
-        mesh = new Mesh();
-        imgW = heightmap.width;
-        imgH = heightmap.height;
-        cellSize = planeSize / heightmap.width;
-        ZcellSize = planeSize / heightmap.height;
 
-        size = (int)planeSize;
-        CreatePlane();
-        UpdateMesh();
+
+        //CreatePlane();
+        //UpdateMesh();
     }
 
-    private void FixedUpdate() {
-        if (Input.GetKeyDown(KeyCode.M)) {
-            CreatePlane();
-            UpdateMesh();
+    public void InitChunks() {
+        chunkObjects = new GameObject[chunkSize * chunkSize];
+        chunkMeshs = new Mesh[chunkSize * chunkSize];
+        chunkFilters = new MeshFilter[chunkSize * chunkSize];
+        chunkRenderers = new MeshRenderer[chunkSize * chunkSize];
+
+        for (int i = 0; i < chunkObjects.Length; i++) {
+            var chunk = new GameObject();
+            chunk.transform.parent = transform;
+            chunk.name = "TerrainChunk" + i;
+            chunkObjects[i] = chunk;
+            chunkFilters[i] = chunk.AddComponent<MeshFilter>();
+            chunkFilters[i].mesh = new Mesh();
+            chunkRenderers[i] = chunk.AddComponent<MeshRenderer>();
+            chunkRenderers[i].material = groundMaterial;
         }
     }
+
+    public void UpdateChunkMesh() {
+        for (int i = 0; i < chunkObjects.Length; i++) {
+            chunkFilters[i].mesh = chunkMeshs[i];
+            chunkRenderers[i].material = groundMaterial;
+        } 
+    }
+
+    public void CreateChunkPlane() {
+        int size = (chunkResolution + 1) * (chunkResolution + 1);
+        chunkTriangles = new int[chunkSize * chunkSize][];
+        chunkVertices = new Vector3[chunkSize * chunkSize][];
+        chunkUVs = new Vector2[chunkSize * chunkSize][];
+
+
+        int imgX = 0;
+        int imgZ = 0;
+        // 4 loops 
+        int chunkIndex = 0;
+        // chunk z < chunkSize
+        for (int cz = 0; cz < chunkSize; cz++) {
+            
+            // chunk x < chunkSize
+            for (int cx = 0; cx < chunkSize; cx++) {
+                
+                int vertexIndex = 0;
+                // per chunk vets and uvs
+                Vector3[] verts = new Vector3[size];
+                Vector2[] uv = new Vector2[size];
+                imgZ = chunkResolution * cz;
+                // chunk res z <= chunkResolution
+                for (int z = 0; z <= chunkResolution; z++) {
+                    imgX = chunkResolution * cx;
+                    // chunk res x <= chunkResolution
+                    for (int x = 0; x <= chunkResolution; x++) {
+                        float xCord = x + (chunkResolution * cx);
+                        float zCord = z + (chunkResolution * cz);
+
+                        uv[vertexIndex] = new Vector2((float)imgX / chunkResolution / chunkSize, (float)imgZ / chunkResolution / chunkSize);
+
+                        int pixelX = Mathf.FloorToInt(uv[vertexIndex].x * imgW);
+                        int pixelY = Mathf.FloorToInt(uv[vertexIndex].y * imgH);
+                        float yCord = heightmap.GetPixel(pixelX, pixelY).grayscale * worldHeight;
+                        verts[vertexIndex] = new Vector3(xCord, yCord, zCord);
+
+                        imgX++;
+                        vertexIndex++;
+                        
+                    }
+                    imgZ++;
+                }
+                
+                
+
+                // per chunk vets and uvs
+                int[] tris = new int[size * 2 * 3];
+                for (int ti = 0, vi = 0, y = 0; y < chunkResolution; y++, vi++) {
+                    for (int x = 0; x < chunkResolution; x++, ti += 6, vi++) {
+                        tris[ti] = vi;
+                        tris[ti + 1] = tris[ti + 3] = vi + chunkResolution + 1;
+                        tris[ti + 4] = vi + chunkResolution + 2;
+                        tris[ti + 2] = tris[ti + 5] = vi + 1;
+                    }
+                }
+
+                // set to master
+                chunkVertices[chunkIndex] = verts;
+                chunkTriangles[chunkIndex] = tris;
+                chunkUVs[chunkIndex] = uv;
+
+                // create chunk mesh
+                Mesh mesh = new Mesh();
+                mesh.vertices = verts;
+                mesh.triangles = tris;
+                mesh.uv = uv;
+                mesh.RecalculateNormals();
+
+                // set to filters
+                chunkMeshs[chunkIndex] = mesh;
+
+                chunkIndex++;
+            }
+        }
+    }
+
 
     void UpdateMesh() {
         mf.mesh.Clear();
@@ -57,18 +197,13 @@ public class PlaneMeshMaker : MonoBehaviour {
         mesh.uv = uvs;
         mesh.RecalculateNormals();
 
-        for (int i = 0; i < vertices.Length; i++) {
-            //GameObject v = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            //v.transform.position = vertices[i];
-            // v.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-        }
         mf.mesh = mesh;
     }
 
 
     private void CreatePlane() {
 
-        cellSize = planeSize / imgW;
+        //cellSize = planeSize / imgW;
         float xSize = planeSize / imgW;
         float zSize = planeSize / imgH;
 
@@ -85,7 +220,7 @@ public class PlaneMeshMaker : MonoBehaviour {
                 float zCord = z;
 
                 vertices[currentVertex] = new Vector3(xCord, yCord, zCord);
-                uvs[currentVertex] = new Vector2(1 - (x / size), 1 - (z / size));
+                uvs[currentVertex] = new Vector2((x / size), (z / size));
                 currentVertex++;
             }
         }
@@ -101,22 +236,6 @@ public class PlaneMeshMaker : MonoBehaviour {
                 triangles[ti + 2] = triangles[ti + 5] = vi + 1;
             }
         }
-        /*
-        for (int z = 0; z < imgH; z++) {
-            for (int x = 0; x < imgW; x++) {
-                triangles[tri + 0] = vert + 0;
-                triangles[tri + 1] = vert + imgW + 1;
-                triangles[tri + 2] = vert + 1;
-                triangles[tri + 3] = vert + 1;
-                triangles[tri + 4] = vert + imgW + 1;
-                triangles[tri + 5] = vert + imgW + 2;
-
-                vert++;
-                tri += 6;
-
-            }
-        }
-        */
     }
 
 }

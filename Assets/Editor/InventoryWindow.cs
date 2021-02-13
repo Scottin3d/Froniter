@@ -10,22 +10,27 @@ public class InventoryWindow : EditorWindow
         GetWindow<InventoryWindow>();
     }
 
-    public Inventory currentInventory;
+    public PlaneMeshMaker planGen;
 
     private void OnGUI() {
-        if (currentInventory == null) {
-            currentInventory = InventoryHandler.current.ResourceInventory;
-        }
-        SerializedObject obj = new SerializedObject(this);
-
-        //EditorGUILayout.PropertyField(obj.FindProperty("currentInventory"));
+        planGen = FindObjectOfType<PlaneMeshMaker>();
         EditorGUILayout.BeginVertical("box");
         //private Dictionary<ResourceType, InventorySlot> container;
-        foreach (KeyValuePair<ResourceType, InventorySlot> slot in currentInventory.Container) {
-           GUILayout.Label(slot.Key.ToString() + ": " + slot.Value.ItemCount.ToString());
+        if (GUILayout.Button("Update mesh")) {
+            UpdateMesh();
+        }
+        if (GUILayout.Button("Delete mesh")) {
+            foreach (Transform child in planGen.transform) {
+                DestroyImmediate(child);
+            }
         }
         EditorGUILayout.EndVertical();
+    }
 
-        obj.ApplyModifiedProperties();
+    private void UpdateMesh() {
+        planGen.InitChunks();
+        planGen.CreateChunkPlane();
+
+        planGen.UpdateChunkMesh();
     }
 }
