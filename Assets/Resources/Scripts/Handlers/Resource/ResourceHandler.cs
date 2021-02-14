@@ -60,42 +60,28 @@ public class ResourceHandler : MonoBehaviour {
     }
 
 
-    public void GenerateTrees(GameObject prefab, Texture2D heightmap) {
+    public void GenerateTrees(GameObject prefab, float[,] mProcessedMap) {
         // adjust y
-        for (int z = 0; z < heightmap.height; z++) {
-            for (int x = 0; x < heightmap.width; x++) {
-                Vector3 spawnPos = new Vector3(x + UnityEngine.Random.Range(0.5f, 1.5f), 0, z + UnityEngine.Random.Range(0.5f, 1.5f));
-                Vector3 rayPos = new Vector3(spawnPos.x, 100f, spawnPos.z);
+        for (int z = 0; z < mProcessedMap.GetLength(0); z+= 2) {
+            for (int x = 0; x < mProcessedMap.GetLength(1); x+= 2) {
+                if (mProcessedMap[z,x] > 0.25f * TerrainHandler.current.worldHeight) {
+                    Vector3 spawnPos = new Vector3(x + UnityEngine.Random.Range(0.5f, 1.5f),
+                                                   mProcessedMap[z, x],
+                                                   z + UnityEngine.Random.Range(0.5f, 1.5f));
 
-                Ray ray = new Ray(rayPos, Vector3.down);
-                RaycastHit hit;
-                if (Physics.Raycast(ray, out hit)) {
-                    if (hit.collider.CompareTag("ground")) {
-                        Debug.Log(hit.point + " " + hit.textureCoord);
-                        Vector2Int cord = new Vector2Int(Mathf.FloorToInt(hit.textureCoord.x * heightmap.width), Mathf.FloorToInt(hit.textureCoord.y * heightmap.height));
+                    GameObject prefabClone = Instantiate<GameObject>(prefab, spawnPos, Quaternion.identity, inGameResources);
 
-                        Debug.Log(cord);
+                    Resource cloneResource = prefabClone.GetComponent<Resource>();
+                    //cloneResource.resourceType = ResourceType.Wood;
+                    cloneResource.OnResourceDestroyed += Resource_HandleOnResourceDestroy;
+                    prefabClone.transform.localScale = Vector3.one * UnityEngine.Random.Range(0.5f, 1.5f);
+                    prefabClone.name = "resourceNode: " + cloneResource.itemObject.itemResourceType + inGameResources.transform.childCount;
 
-                        float pixelColor = heightmap.GetPixel(cord.x, cord.y).grayscale;
-                        Debug.Log(pixelColor);
-                        if (pixelColor < 0.3) {
+                    // add to resource dictionary
+                    AddResource(cloneResource);
 
-                            spawnPos.y = hit.point.y;
-                            GameObject prefabClone = Instantiate<GameObject>(prefab, spawnPos, Quaternion.identity, inGameResources);
-
-                            Resource cloneResource = prefabClone.GetComponent<Resource>();
-                            //cloneResource.resourceType = ResourceType.Wood;
-                            cloneResource.OnResourceDestroyed += Resource_HandleOnResourceDestroy;
-                            prefabClone.transform.localScale = Vector3.one * UnityEngine.Random.Range(0.2f, 0.7f);
-                            prefabClone.name = "resourceNode: " + cloneResource.itemObject.itemResourceType + inGameResources.transform.childCount;
-
-                            // add to resource dictionary
-                            AddResource(cloneResource);
-
-                            // trigger jobs available
-                            OnJobsAvailable?.Invoke(true);
-                        }
-                    }
+                    // trigger jobs available
+                    OnJobsAvailable?.Invoke(true);
                 }
             }
         }
@@ -114,7 +100,7 @@ public class ResourceHandler : MonoBehaviour {
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit)) {
                 if (hit.collider.CompareTag("ground")) {
-                    
+
                     spawnPos.y = hit.point.y;
                     GameObject prefabClone = Instantiate<GameObject>(prefabs[prefabIdnex], spawnPos, Quaternion.identity, inGameResources);
                     //prefabClone.transform.position = spawnPos;

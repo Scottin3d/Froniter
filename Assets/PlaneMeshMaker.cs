@@ -13,17 +13,15 @@ public class PlaneMeshMaker : MonoBehaviour {
     /*global
      */
     private Texture2D heightmap;
+    float[,] processedMap;
     public Material groundMaterial;
     public float planeSize = 20;
 
     int size;
-    [SerializeField] float cellSize;
-    [SerializeField] float ZcellSize;
-    [SerializeField] int imgW;
-    [SerializeField] int imgH;
+    int imgW;
+    int imgH;
 
-    [Range(0.1f, 100f)]
-    public float worldHeight = 1f;
+   float worldHeight = 1f;
 
     /*Chunk
      */
@@ -53,17 +51,19 @@ public class PlaneMeshMaker : MonoBehaviour {
         current = this;
     }
 
-    public void GenerateTerrain(Texture2D mHeightmap) {
+    public void GenerateTerrain(float[,] mProcessedMap, Texture2D mHeightmap, float mWorldHeight) {
         /*global
              */
+        worldHeight = mWorldHeight;
         heightmap = mHeightmap;
+        processedMap = mProcessedMap;
         size = (int)planeSize;
-        imgW = heightmap.width;
-        imgH = heightmap.height;
+        imgW = mProcessedMap.GetLength(1);
+        imgH = mProcessedMap.GetLength(0);
+        //imgW = heightmap.width / 2;
+        //imgH = heightmap.height / 2;
         chunkResolution = 32;
         chunkSize = imgW / chunkResolution; // 32
-        cellSize = planeSize / imgW;
-        ZcellSize = planeSize / imgH;
         /*Chunk
          */
         chunkObjects = new GameObject[chunkSize * chunkSize];
@@ -135,6 +135,7 @@ public class PlaneMeshMaker : MonoBehaviour {
 
                         int pixelX = Mathf.FloorToInt(uv[vertexIndex].x * imgW);
                         int pixelY = Mathf.FloorToInt(uv[vertexIndex].y * imgH);
+                        //float yCord = processedMap[pixelY, pixelX] * worldHeight;
                         float yCord = heightmap.GetPixel(pixelX, pixelY).grayscale * worldHeight;
                         verts[vertexIndex] = new Vector3(xCord, yCord, zCord);
 
@@ -205,7 +206,9 @@ public class PlaneMeshMaker : MonoBehaviour {
             for (float xImg = 0, x = 0; x <= planeSize; x += xSize, xImg++) {
 
                 float xCord = x;
-                float yCord = heightmap.GetPixel((int)xImg, (int)zImg).grayscale * worldHeight;
+                //float yCord = heightmap.GetPixel((int)xImg, (int)zImg).grayscale * worldHeight;
+                float yCord = processedMap[(int)zImg, (int)xImg] * worldHeight;
+
                 float zCord = z;
 
                 vertices[currentVertex] = new Vector3(xCord, yCord, zCord);
