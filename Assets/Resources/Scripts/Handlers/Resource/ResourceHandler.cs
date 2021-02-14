@@ -60,28 +60,31 @@ public class ResourceHandler : MonoBehaviour {
     }
 
 
-    public void GenerateTrees(GameObject prefab, float[,] mProcessedMap) {
+    public void GenerateTrees(GameObject prefab, float[,] mProcessedMap, int mapSize) {
         // adjust y
-        for (int z = 0; z < mProcessedMap.GetLength(0); z+= 2) {
-            for (int x = 0; x < mProcessedMap.GetLength(1); x+= 2) {
+        for (int z = 0; z < mProcessedMap.GetLength(0); z+= 8) {
+            for (int x = 0; x < mProcessedMap.GetLength(1); x+= 8) {
                 if (mProcessedMap[z,x] > 0.25f * TerrainHandler.current.worldHeight) {
-                    Vector3 spawnPos = new Vector3(x + UnityEngine.Random.Range(0.5f, 1.5f),
-                                                   mProcessedMap[z, x],
-                                                   z + UnityEngine.Random.Range(0.5f, 1.5f));
+                    Vector3 spawnPos = new Vector3(x, 0, z);
+                    spawnPos *= ((float)mapSize / mProcessedMap.GetLength(0));
+                    spawnPos.y = mProcessedMap[z, x];
+                    //GameObject prefabClone = Instantiate<GameObject>(prefab, spawnPos, Quaternion.identity, inGameResources);
+                    GameObject cloneTree = ObjectPooler.current.SpawnFromPool("tree", spawnPos, Quaternion.identity, Vector3.one * UnityEngine.Random.Range(0.5f, 1.5f));
+                    if (cloneTree != null) {
+                        Resource cloneResource = cloneTree.GetComponent<Resource>();
+                        //cloneResource.resourceType = ResourceType.Wood;
+                        cloneResource.OnResourceDestroyed += Resource_HandleOnResourceDestroy;
+                        //cloneTree.transform.localScale = Vector3.one * UnityEngine.Random.Range(0.5f, 1.5f);
+                        cloneTree.name = "resourceNode: " + cloneResource.itemObject.itemResourceType + inGameResources.transform.childCount;
 
-                    GameObject prefabClone = Instantiate<GameObject>(prefab, spawnPos, Quaternion.identity, inGameResources);
+                        // add to resource dictionary
+                        AddResource(cloneResource);
 
-                    Resource cloneResource = prefabClone.GetComponent<Resource>();
-                    //cloneResource.resourceType = ResourceType.Wood;
-                    cloneResource.OnResourceDestroyed += Resource_HandleOnResourceDestroy;
-                    prefabClone.transform.localScale = Vector3.one * UnityEngine.Random.Range(0.5f, 1.5f);
-                    prefabClone.name = "resourceNode: " + cloneResource.itemObject.itemResourceType + inGameResources.transform.childCount;
+                        // trigger jobs available
+                        OnJobsAvailable?.Invoke(true);
+                    }
 
-                    // add to resource dictionary
-                    AddResource(cloneResource);
-
-                    // trigger jobs available
-                    OnJobsAvailable?.Invoke(true);
+                    
                 }
             }
         }

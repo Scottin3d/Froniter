@@ -15,18 +15,19 @@ public class PlaneMeshMaker : MonoBehaviour {
     private Texture2D heightmap;
     float[,] processedMap;
     public Material groundMaterial;
-    public float planeSize = 20;
+    int planeSize;
 
     int size;
     int imgW;
     int imgH;
 
-   float worldHeight = 1f;
+    float worldHeight;
 
     /*Chunk
      */
     private int chunkResolution;
-    private int chunkSize;
+    private int heightmapResolution;
+    private int numberOfChunks;
     private GameObject[] chunkObjects;
     private Mesh[] chunkMeshs;
     private MeshFilter[] chunkFilters;
@@ -51,26 +52,28 @@ public class PlaneMeshMaker : MonoBehaviour {
         current = this;
     }
 
-    public void GenerateTerrain(float[,] mProcessedMap, Texture2D mHeightmap, float mWorldHeight) {
+    public void GenerateTerrain(int mMapSize, float[,] mProcessedMap, Texture2D mHeightmap, int resolution = 1,float mWorldHeight = 10f) {
         /*global
              */
         worldHeight = mWorldHeight;
         heightmap = mHeightmap;
         processedMap = mProcessedMap;
+        planeSize = mMapSize;
         size = (int)planeSize;
-        imgW = mProcessedMap.GetLength(1);
-        imgH = mProcessedMap.GetLength(0);
-        //imgW = heightmap.width / 2;
-        //imgH = heightmap.height / 2;
-        chunkResolution = 32;
-        chunkSize = imgW / chunkResolution; // 32
+        //imgW = mProcessedMap.GetLength(1);
+        //imgH = mProcessedMap.GetLength(0);
+        imgW = heightmap.width;
+        imgH = heightmap.height;
+        //int numOfChunks = 8;
+        numberOfChunks = 8;
+        chunkResolution = imgW / numberOfChunks / resolution;
         /*Chunk
          */
-        chunkObjects = new GameObject[chunkSize * chunkSize];
-        chunkMeshs = new Mesh[chunkSize * chunkSize];
-        chunkFilters = new MeshFilter[chunkSize * chunkSize];
-        chunkRenderers = new MeshRenderer[chunkSize * chunkSize];
-        chunkColliders = new MeshCollider[chunkSize * chunkSize];
+        chunkObjects = new GameObject[numberOfChunks * numberOfChunks];
+        chunkMeshs = new Mesh[numberOfChunks * numberOfChunks];
+        chunkFilters = new MeshFilter[numberOfChunks * numberOfChunks];
+        chunkRenderers = new MeshRenderer[numberOfChunks * numberOfChunks];
+        chunkColliders = new MeshCollider[numberOfChunks * numberOfChunks];
         groundMaterial.SetTexture("_Height", heightmap);
 
         InitChunks();
@@ -97,15 +100,15 @@ public class PlaneMeshMaker : MonoBehaviour {
         for (int i = 0; i < chunkObjects.Length; i++) {
             chunkFilters[i].mesh = chunkMeshs[i];
             chunkRenderers[i].material = groundMaterial;
-            chunkColliders[i].sharedMesh = chunkMeshs[i];
+            //chunkColliders[i].sharedMesh = chunkMeshs[i];
         } 
     }
 
     public void CreateChunkPlane() {
         int size = (chunkResolution + 1) * (chunkResolution + 1);
-        chunkTriangles = new int[chunkSize * chunkSize][];
-        chunkVertices = new Vector3[chunkSize * chunkSize][];
-        chunkUVs = new Vector2[chunkSize * chunkSize][];
+        chunkTriangles = new int[numberOfChunks * numberOfChunks][];
+        chunkVertices = new Vector3[numberOfChunks * numberOfChunks][];
+        chunkUVs = new Vector2[numberOfChunks * numberOfChunks][];
 
 
         int imgX = 0;
@@ -113,10 +116,10 @@ public class PlaneMeshMaker : MonoBehaviour {
         // 4 loops 
         int chunkIndex = 0;
         // chunk z < chunkSize
-        for (int cz = 0; cz < chunkSize; cz++) {
+        for (int cz = 0; cz < numberOfChunks; cz++) {
             
             // chunk x < chunkSize
-            for (int cx = 0; cx < chunkSize; cx++) {
+            for (int cx = 0; cx < numberOfChunks; cx++) {
                 
                 int vertexIndex = 0;
                 // per chunk vets and uvs
@@ -128,10 +131,10 @@ public class PlaneMeshMaker : MonoBehaviour {
                     imgX = chunkResolution * cx;
                     // chunk res x <= chunkResolution
                     for (int x = 0; x <= chunkResolution; x++) {
-                        float xCord = x + (chunkResolution * cx);
-                        float zCord = z + (chunkResolution * cz);
+                        float xCord = (x + (chunkResolution * cx)) * ((float)planeSize / imgW);
+                        float zCord = (z + (chunkResolution * cz)) * ((float)planeSize / imgH);
 
-                        uv[vertexIndex] = new Vector2((float)imgX / chunkResolution / chunkSize, (float)imgZ / chunkResolution / chunkSize);
+                        uv[vertexIndex] = new Vector2((float)imgX / chunkResolution / numberOfChunks, (float)imgZ / chunkResolution / numberOfChunks);
 
                         int pixelX = Mathf.FloorToInt(uv[vertexIndex].x * imgW);
                         int pixelY = Mathf.FloorToInt(uv[vertexIndex].y * imgH);
