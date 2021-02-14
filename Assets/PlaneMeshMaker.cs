@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using mattatz.MeshSmoothingSystem;
 
 
 public class PlaneMeshMaker : MonoBehaviour {
@@ -11,7 +12,7 @@ public class PlaneMeshMaker : MonoBehaviour {
     public List<Vector2Int> pixels = new List<Vector2Int>();
     /*global
      */
-    public Texture2D heightmap;
+    private Texture2D heightmap;
     public Material groundMaterial;
     public float planeSize = 20;
 
@@ -32,6 +33,7 @@ public class PlaneMeshMaker : MonoBehaviour {
     private Mesh[] chunkMeshs;
     private MeshFilter[] chunkFilters;
     private MeshRenderer[] chunkRenderers;
+    private MeshCollider[] chunkColliders;
     private int[][] chunkTriangles;
     private Vector3[][] chunkVertices;
     private Vector2[][] chunkUVs;
@@ -46,16 +48,15 @@ public class PlaneMeshMaker : MonoBehaviour {
     private Vector3[] vertices;
     private Vector2[] uvs;
 
-    private void FixedUpdate() {
-        if (Input.GetKeyDown(KeyCode.M)) {
-            CreateChunkPlane();
-            UpdateChunkMesh();
-        }
+
+    private void Awake() {
+        current = this;
     }
 
-    private void Start() {
+    public void GenerateTerrain(Texture2D mHeightmap) {
         /*global
-         */
+             */
+        heightmap = mHeightmap;
         size = (int)planeSize;
         imgW = heightmap.width;
         imgH = heightmap.height;
@@ -65,43 +66,30 @@ public class PlaneMeshMaker : MonoBehaviour {
         ZcellSize = planeSize / imgH;
         /*Chunk
          */
-        chunkObjects =  new GameObject[chunkSize * chunkSize];
-        chunkMeshs =  new Mesh[chunkSize * chunkSize];
-        chunkFilters = new MeshFilter[chunkSize * chunkSize];
-        chunkRenderers = new MeshRenderer[chunkSize * chunkSize];
-
-        InitChunks();
-
-        CreateChunkPlane();
-        UpdateChunkMesh();
-
-        /*Single
-         */
-        mesh = new Mesh();
-        mr = GetComponent<MeshRenderer>();
-        mf = GetComponent<MeshFilter>();
-
-
-
-        //CreatePlane();
-        //UpdateMesh();
-    }
-
-    public void InitChunks() {
         chunkObjects = new GameObject[chunkSize * chunkSize];
         chunkMeshs = new Mesh[chunkSize * chunkSize];
         chunkFilters = new MeshFilter[chunkSize * chunkSize];
         chunkRenderers = new MeshRenderer[chunkSize * chunkSize];
+        chunkColliders = new MeshCollider[chunkSize * chunkSize];
+        groundMaterial.SetTexture("_Height", heightmap);
 
+        InitChunks();
+        CreateChunkPlane();
+        UpdateChunkMesh();
+    }
+
+    public void InitChunks() {
         for (int i = 0; i < chunkObjects.Length; i++) {
             var chunk = new GameObject();
             chunk.transform.parent = transform;
             chunk.name = "TerrainChunk" + i;
+            chunk.tag = "ground";
             chunkObjects[i] = chunk;
             chunkFilters[i] = chunk.AddComponent<MeshFilter>();
             chunkFilters[i].mesh = new Mesh();
             chunkRenderers[i] = chunk.AddComponent<MeshRenderer>();
             chunkRenderers[i].material = groundMaterial;
+            chunkColliders[i] = chunk.AddComponent<MeshCollider>();
         }
     }
 
@@ -109,6 +97,7 @@ public class PlaneMeshMaker : MonoBehaviour {
         for (int i = 0; i < chunkObjects.Length; i++) {
             chunkFilters[i].mesh = chunkMeshs[i];
             chunkRenderers[i].material = groundMaterial;
+            chunkColliders[i].sharedMesh = chunkMeshs[i];
         } 
     }
 

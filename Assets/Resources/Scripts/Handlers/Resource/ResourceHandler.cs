@@ -59,6 +59,48 @@ public class ResourceHandler : MonoBehaviour {
         }
     }
 
+
+    public void GenerateTrees(GameObject prefab, Texture2D heightmap) {
+        // adjust y
+        for (int z = 0; z < heightmap.height; z++) {
+            for (int x = 0; x < heightmap.width; x++) {
+                Vector3 spawnPos = new Vector3(x + UnityEngine.Random.Range(0.5f, 1.5f), 0, z + UnityEngine.Random.Range(0.5f, 1.5f));
+                Vector3 rayPos = new Vector3(spawnPos.x, 100f, spawnPos.z);
+
+                Ray ray = new Ray(rayPos, Vector3.down);
+                RaycastHit hit;
+                if (Physics.Raycast(ray, out hit)) {
+                    if (hit.collider.CompareTag("ground")) {
+                        Debug.Log(hit.point + " " + hit.textureCoord);
+                        Vector2Int cord = new Vector2Int(Mathf.FloorToInt(hit.textureCoord.x * heightmap.width), Mathf.FloorToInt(hit.textureCoord.y * heightmap.height));
+
+                        Debug.Log(cord);
+
+                        float pixelColor = heightmap.GetPixel(cord.x, cord.y).grayscale;
+                        Debug.Log(pixelColor);
+                        if (pixelColor < 0.3) {
+
+                            spawnPos.y = hit.point.y;
+                            GameObject prefabClone = Instantiate<GameObject>(prefab, spawnPos, Quaternion.identity, inGameResources);
+
+                            Resource cloneResource = prefabClone.GetComponent<Resource>();
+                            //cloneResource.resourceType = ResourceType.Wood;
+                            cloneResource.OnResourceDestroyed += Resource_HandleOnResourceDestroy;
+                            prefabClone.transform.localScale = Vector3.one * UnityEngine.Random.Range(0.2f, 0.7f);
+                            prefabClone.name = "resourceNode: " + cloneResource.itemObject.itemResourceType + inGameResources.transform.childCount;
+
+                            // add to resource dictionary
+                            AddResource(cloneResource);
+
+                            // trigger jobs available
+                            OnJobsAvailable?.Invoke(true);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private void SpawnNodes(int prefabIdnex = 0) {
         Vector3 parentPos = transform.position;
         for (int i = 0; i < numPrefabs; i++) {
@@ -72,6 +114,7 @@ public class ResourceHandler : MonoBehaviour {
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit)) {
                 if (hit.collider.CompareTag("ground")) {
+                    
                     spawnPos.y = hit.point.y;
                     GameObject prefabClone = Instantiate<GameObject>(prefabs[prefabIdnex], spawnPos, Quaternion.identity, inGameResources);
                     //prefabClone.transform.position = spawnPos;
