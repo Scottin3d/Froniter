@@ -60,11 +60,12 @@ public class ResourceHandler : MonoBehaviour {
     }
 
 
+    /*
     public void GenerateTrees(GameObject prefab, float[,] mProcessedMap, int mapSize) {
         // adjust y
         for (int z = 0; z < mProcessedMap.GetLength(0); z+= 8) {
             for (int x = 0; x < mProcessedMap.GetLength(1); x+= 8) {
-                if (mProcessedMap[z,x] > 0.25f * TerrainHandler.current.worldHeight) {
+                if (mProcessedMap[z,x] > 0.25f * TerrainHandler.terrain.worldHeight) {
                     Vector3 spawnPos = new Vector3(x, 0, z);
                     spawnPos *= ((float)mapSize / mProcessedMap.GetLength(0));
                     spawnPos.y = mProcessedMap[z, x];
@@ -89,7 +90,7 @@ public class ResourceHandler : MonoBehaviour {
             }
         }
     }
-
+    */
     private void SpawnNodes(int prefabIdnex = 0) {
         Vector3 parentPos = transform.position;
         for (int i = 0; i < numPrefabs; i++) {
