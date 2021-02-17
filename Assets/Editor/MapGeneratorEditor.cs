@@ -11,13 +11,13 @@ public class MapGeneratorEditor : Editor {
         if (DrawDefaultInspector()) {
             if (mapGen.autoGenerate) {
 
-                mapGen.GenerateMap();
+                mapGen.DrawMapInEditor();
             }
 
         }
 
         if (GUILayout.Button("Generate Map")) {
-            mapGen.GenerateMap();
+            mapGen.DrawMapInEditor();
         }
     }
 }

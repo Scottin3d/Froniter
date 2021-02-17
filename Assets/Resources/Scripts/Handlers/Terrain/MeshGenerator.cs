@@ -4,6 +4,7 @@ using UnityEngine;
 
 public static class MeshGenerator {
     public static MeshData GenerateTerrainMesh(float[,] heightmap, float heightMulitplier, AnimationCurve meshHieghtCurve, int levelOfDetail) {
+        AnimationCurve heightCurve = new AnimationCurve(meshHieghtCurve.keys);
         int width = heightmap.GetLength(0);
         int height = heightmap.GetLength(1);
 
@@ -18,7 +19,9 @@ public static class MeshGenerator {
 
         for (int z = 0; z < height; z+= meshSimplificationIncrement) {
             for (int x = 0; x < width; x+= meshSimplificationIncrement) {
-                meshData.vertices[vertexIndex] = new Vector3(topLeftX + x, meshHieghtCurve.Evaluate(heightmap[x, z]) * heightMulitplier, topLeftZ - z);
+
+
+                meshData.vertices[vertexIndex] = new Vector3(topLeftX + x, heightCurve.Evaluate(heightmap[x, z]) * heightMulitplier, topLeftZ - z);
                 meshData.uv[vertexIndex] = new Vector2(x / (float)width, z/ (float)height);
 
                 if (x < width -1 && z < height - 1) {

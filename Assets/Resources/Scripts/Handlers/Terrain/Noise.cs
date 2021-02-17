@@ -74,4 +74,40 @@ public static class Noise {
         }
         return noiseMap;
     }
+
+    public static float[,] GenerateNoiseMapFromHeightmapWithCurve(Texture2D heightmap, AnimationCurve riverCurve) {
+        int width = heightmap.width;
+        int height = heightmap.height;
+        float[,] noiseMap = new float[width, height];
+
+        int riverTimeIncrement = 1 / width;
+
+        float[,] riverMap = new float[width, height];
+        Vector2[] rMap = new Vector2[width];
+        for (float i = 0; i < width; i++) {
+            rMap[(int)i] = new Vector2(i, riverCurve.Evaluate(i / width));
+        }
+
+        for (int z = 0; z < height; z++) {
+            for (int x = 0; x < width; x++) {
+
+                int curveValue = Mathf.RoundToInt(riverCurve.Evaluate(x) * height);
+                curveValue = (curveValue == z) ? curveValue : 0;
+                riverMap[x, z] = curveValue;
+            }
+        }
+        
+        Color[] pixelColors = new Color[width * height];
+        pixelColors = heightmap.GetPixels();
+        for (int z = 0; z < height; z++) {
+            for (int x = 0; x < width; x++) {
+                noiseMap[x, z] = pixelColors[z * width + x].grayscale;
+
+                if (Mathf.RoundToInt(rMap[x].y * height) >= z - 5 && Mathf.RoundToInt(rMap[x].y * height) <= z + 5) {
+                    noiseMap[x, z] *= 0;
+                }
+            }
+        }
+        return noiseMap;
+    }
 }
