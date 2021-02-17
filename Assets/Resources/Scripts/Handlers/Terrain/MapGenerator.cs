@@ -42,33 +42,20 @@ public class MapGenerator : MonoBehaviour {
         // use hegihtmap
         if (useHeightmap && heightmap != null) {
             noiseMap = Noise.GenerateNoiseMapFromHeightmap(heightmap);
-
-            colorMap = new Color[heightmap.width * heightmap.height];
-            for (int z = 0; z < heightmap.height; z++) {
-                for (int x = 0; x < heightmap.width; x++) {
-                    float currHeight = noiseMap[x, z];
-
-                    for (int i = 0; i < regions.Length; i++) {
-                        if (currHeight <= regions[i].height) {
-                            colorMap[z * heightmap.width + x] = regions[i].color;
-                            break;
-                        }
-                    }
-                }
-            }
         // use noise map
         } else {
             noiseMap = Noise.GenerateNoiseMap(chunkSize, chunkSize, seed, noiseScale, octaves, persistence, lacunarity, offset);
-            colorMap = new Color[chunkSize * chunkSize];
-            for (int z = 0; z < chunkSize; z++) {
-                for (int x = 0; x < chunkSize; x++) {
-                    float currHeight = noiseMap[x, z];
+        }
 
-                    for (int i = 0; i < regions.Length; i++) {
-                        if (currHeight <= regions[i].height) {
-                            colorMap[z * chunkSize + x] = regions[i].color;
-                            break;
-                        }
+        colorMap = new Color[chunkSize * chunkSize];
+        for (int z = 0; z < chunkSize; z++) {
+            for (int x = 0; x < chunkSize; x++) {
+                float currHeight = noiseMap[x, z];
+
+                for (int i = 0; i < regions.Length; i++) {
+                    if (currHeight <= regions[i].height) {
+                        colorMap[z * chunkSize + x] = regions[i].color;
+                        break;
                     }
                 }
             }
