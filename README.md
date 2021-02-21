@@ -1,5 +1,6 @@
 # About 
 Scott Shirley: [@Scottin3d](https://github.com/Scottin3d)
+![Title](https://imgur.com/UWeVjQl.png)
 
 This is a repository of prototypes for a game I am working on. It is a city building simulator. I would say it is going to be Banished meets Foundation, two games that I spend a lot of time making.  The purpose of this is more for me to explore Unity rather than to make a game.  
 
