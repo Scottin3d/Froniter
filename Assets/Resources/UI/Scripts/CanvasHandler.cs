@@ -84,4 +84,6 @@ public class CanvasHandler : MonoBehaviour {
         playerInventory.text = mInventory.ToString();
         playerInventoryCC.text = playerInventory.text;
     }
+
+    
 }

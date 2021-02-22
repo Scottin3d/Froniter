@@ -18,6 +18,8 @@ public abstract class ItemObject : ScriptableObject {
     public ResourceType itemResourceType;
     [TextArea(10,15)]
     public string itemDescription;
+
+
     public Sprite itemUIicon;
     public Color itemUIiconColor = Color.white;
     public int itemCount = 0;

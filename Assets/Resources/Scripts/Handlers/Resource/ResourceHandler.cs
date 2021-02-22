@@ -23,13 +23,16 @@ public class ResourceHandler : MonoBehaviour {
 
     private void Awake() {
         current = this;
-
+        Debug.Assert(prefabs != null);
         Debug.Assert(inGameResources != null, "Please assign resources in editor!");
-
+    }
+    void Start() {
         // initialize work places
         InitInGameResources();
-    }
+        InputHandler.current.OnPress_r += Input_HandleOnPress_r;
+        InputHandler.current.OnPress_t += Input_HandleOnPress_t;
 
+    }
     private void InitInGameResources() {
         foreach (Transform child in inGameResources) {
             Resource childResource = child.GetComponent<Resource>();
@@ -46,51 +49,22 @@ public class ResourceHandler : MonoBehaviour {
         }
     }
 
-    void Start() {
-        Debug.Assert(prefabs != null);
+
+    #region Event Handlers
+    private void Input_HandleOnPress_r() {
+        SpawnNodes(1);
     }
 
-    private void Update() {
-        if (Input.GetKeyDown(KeyCode.T)) {
-            SpawnNodes(0);
-        }
-        if (Input.GetKeyDown(KeyCode.R)) {
-            SpawnNodes(1);
-        }
+    private void Input_HandleOnPress_t() {
+        SpawnNodes(0);
     }
 
-
-    /*
-    public void GenerateTrees(GameObject prefab, float[,] mProcessedMap, int mapSize) {
-        // adjust y
-        for (int z = 0; z < mProcessedMap.GetLength(0); z+= 8) {
-            for (int x = 0; x < mProcessedMap.GetLength(1); x+= 8) {
-                if (mProcessedMap[z,x] > 0.25f * TerrainHandler.terrain.worldHeight) {
-                    Vector3 spawnPos = new Vector3(x, 0, z);
-                    spawnPos *= ((float)mapSize / mProcessedMap.GetLength(0));
-                    spawnPos.y = mProcessedMap[z, x];
-                    //GameObject prefabClone = Instantiate<GameObject>(prefab, spawnPos, Quaternion.identity, inGameResources);
-                    GameObject cloneTree = ObjectPooler.current.SpawnFromPool("tree", spawnPos, Quaternion.identity, Vector3.one * UnityEngine.Random.Range(0.5f, 1.5f));
-                    if (cloneTree != null) {
-                        Resource cloneResource = cloneTree.GetComponent<Resource>();
-                        //cloneResource.resourceType = ResourceType.Wood;
-                        cloneResource.OnResourceDestroyed += Resource_HandleOnResourceDestroy;
-                        //cloneTree.transform.localScale = Vector3.one * UnityEngine.Random.Range(0.5f, 1.5f);
-                        cloneTree.name = "resourceNode: " + cloneResource.itemObject.itemResourceType + inGameResources.transform.childCount;
-
-                        // add to resource dictionary
-                        AddResource(cloneResource);
-
-                        // trigger jobs available
-                        OnJobsAvailable?.Invoke(true);
-                    }
-
-                    
-                }
-            }
-        }
+    private void Resource_HandleOnResourceDestroy(GameObject mResourceType, Transform mTransform) {
+        //GameObject deadResource = Instantiate<GameObject>(mResourceType, mTransform.position, Quaternion.identity, inGameResources);
+        //deadResource.transform.localScale = mTransform.localScale;
     }
-    */
+    #endregion
+
     private void SpawnNodes(int prefabIdnex = 0) {
         Vector3 parentPos = transform.position;
         for (int i = 0; i < numPrefabs; i++) {
@@ -126,10 +100,7 @@ public class ResourceHandler : MonoBehaviour {
         }
     }
 
-    private void Resource_HandleOnResourceDestroy(GameObject mResourceType, Transform mTransform) {
-        //GameObject deadResource = Instantiate<GameObject>(mResourceType, mTransform.position, Quaternion.identity, inGameResources);
-        //deadResource.transform.localScale = mTransform.localScale;
-    }
+    
 
 
     // TODO get resoure by priority

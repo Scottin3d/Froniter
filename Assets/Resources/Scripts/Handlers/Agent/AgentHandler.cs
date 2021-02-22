@@ -23,14 +23,18 @@ public class AgentHandler : MonoBehaviour
         Debug.Assert(inGameAgents != null, "Please assign inGameAgents in the editor!");
     }
 
-    private void Update() {
-        if (Input.GetKeyDown(KeyCode.L)) {
-            SpawnAgent(Instantiate(agentObjects[0]), JobType.lumberjack);
-        }
+    private void Start() {
+        InputHandler.current.OnPress_g += Input_HandleOnPress_g;
+        InputHandler.current.OnPress_l += Input_HandleOnPress_l;
 
-        if (Input.GetKeyDown(KeyCode.G)) {
-            SpawnAgent(Instantiate(agentObjects[0]), JobType.gatherer);
-        }
+    }
+
+    private void Input_HandleOnPress_g() {
+        SpawnAgent(Instantiate(agentObjects[0]), JobType.gatherer);
+    }
+
+    private void Input_HandleOnPress_l() {
+        SpawnAgent(Instantiate(agentObjects[0]), JobType.lumberjack);
     }
 
     private void SpawnAgent(AgentObject mAgentObject, JobType job) {
