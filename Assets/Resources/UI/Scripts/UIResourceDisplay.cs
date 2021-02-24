@@ -22,6 +22,6 @@ public class UIResourceDisplay : MonoBehaviour {
 
     private void Update() {
         displayIconCC.sprite = displayIcon.sprite;
-        countCC.text = count.text;
+        //countCC.text = count.text;
     }
 }

@@ -19,12 +19,32 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - Texture2D_15555B30:
+        m_Texture: {fileID: 2800000, guid: 165c6021db1605a41912b6c680ac8b7a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - Texture2D_625620E4:
-        m_Texture: {fileID: 2800000, guid: b68731c638460594dbd671d837a36be7, type: 3}
+        m_Texture: {fileID: 2800000, guid: f48e10ae1406e6b468e0566234758522, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_7B6643D7:
+        m_Texture: {fileID: 2800000, guid: d949670a2d0184047b837a64e0324286, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_920A8E49:
+        m_Texture: {fileID: 2800000, guid: 702d3b03479d68d4e8f99da7cf155f7b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_944895BF:
+        m_Texture: {fileID: 2800000, guid: 22043d1ebd7137a45b383f56238f3959, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - Texture2D_DF99CF1D:
-        m_Texture: {fileID: 2800000, guid: 3c880656a2c8e224abcf9bc7da8a5f03, type: 3}
+        m_Texture: {fileID: 2800000, guid: 7ea41cdac2f9c244da839292d1bef120, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_F9ADB1B9:
+        m_Texture: {fileID: 2800000, guid: f330d10d77469604ca5b585bed11cd53, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseMap:
@@ -40,11 +60,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _GNormal:
-        m_Texture: {fileID: 2800000, guid: 85b476a65002e664081d8b3d6e4d7689, type: 3}
+        m_Texture: {fileID: 2800000, guid: 9bc6de24ff1d9594d9ea64eff636989c, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Grass:
-        m_Texture: {fileID: 2800000, guid: ebc47cdffb97b874490d29c433f926ea, type: 3}
+        m_Texture: {fileID: 2800000, guid: 800c34e7ded2bd44b984a4b8897129ea, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Height:
@@ -64,11 +84,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _RNormal:
-        m_Texture: {fileID: 2800000, guid: 78f972f02f58cb54594696d0671db03b, type: 3}
+        m_Texture: {fileID: 2800000, guid: 73866f41285575b4aa9ee00205607260, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Rock:
-        m_Texture: {fileID: 2800000, guid: 3c29a0a6ac5576e4ba6224849d3fd011, type: 3}
+        m_Texture: {fileID: 2800000, guid: 3230d0ebe7ab8fb40a35e5779e805f57, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
@@ -76,7 +96,13 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - Vector1_52443495: 0.05
+    - Vector1_51EB1631: 0.639
+    - Vector1_52443495: 0
+    - Vector1_60D75434: 0.839
+    - Vector1_6E61646D: 25
+    - Vector1_8B647964: 8
+    - Vector1_B9849F89: 50
+    - Vector1_DE945A56: 3
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
@@ -104,8 +130,8 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _GrassTile: {r: 25, g: 25, b: 0, a: 0}
-    - _RockTile: {r: 25, g: 25, b: 25, a: 0}
+    - _GrassTile: {r: 50, g: 50, b: 0, a: 0}
+    - _RockTile: {r: 50, g: 50, b: 25, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &7429438393780762331
