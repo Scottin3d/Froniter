@@ -31,6 +31,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: d949670a2d0184047b837a64e0324286, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - Texture2D_8D16BD90:
+        m_Texture: {fileID: 2800000, guid: f117960602347594394f8ff7dfe9bcd5, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - Texture2D_920A8E49:
         m_Texture: {fileID: 2800000, guid: 702d3b03479d68d4e8f99da7cf155f7b, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -39,8 +43,16 @@ Material:
         m_Texture: {fileID: 2800000, guid: ce292272e9ea33440a4fe097e7546d39, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - Texture2D_A02247AC:
+        m_Texture: {fileID: 2800000, guid: 5c5b0b4489427de4baa5f53a2c8aede2, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - Texture2D_DF99CF1D:
         m_Texture: {fileID: 2800000, guid: 7ea41cdac2f9c244da839292d1bef120, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_ED5942F4:
+        m_Texture: {fileID: 2800000, guid: 00bc6bf30434cad4db8a7d13d7f65f54, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - Texture2D_F9ADB1B9:
@@ -68,7 +80,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Height:
-        m_Texture: {fileID: 2800000, guid: 22043d1ebd7137a45b383f56238f3959, type: 3}
+        m_Texture: {fileID: 2800000, guid: 30eeb841d70aa944a88b613f8daa4e8f, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
@@ -96,13 +108,23 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - Vector1_51EB1631: 0.696
-    - Vector1_52443495: 0
-    - Vector1_60D75434: 0.839
-    - Vector1_6E61646D: 25
-    - Vector1_8B647964: 8
-    - Vector1_B9849F89: 50
-    - Vector1_DE945A56: 3
+    - Vector1_1D4EF44: 15
+    - Vector1_3001CBD6: 100
+    - Vector1_4583ED18: 0.786
+    - Vector1_50588F8D: 35
+    - Vector1_51EB1631: 0.065
+    - Vector1_52443495: 1
+    - Vector1_53E8CE85: 15
+    - Vector1_5E51FD60: 0.5
+    - Vector1_60D75434: 31
+    - Vector1_6836D3: 25
+    - Vector1_6A7C6C52: 44
+    - Vector1_6E61646D: 35
+    - Vector1_6E8B8532: 15
+    - Vector1_88771533: 3.5
+    - Vector1_8B647964: 1
+    - Vector1_B9849F89: 11.8
+    - Vector1_DE945A56: 7
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1

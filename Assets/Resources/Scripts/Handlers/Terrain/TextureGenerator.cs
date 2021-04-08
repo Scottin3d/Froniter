@@ -19,6 +19,7 @@ public static class TextureGenerator {
         Texture2D texture = new Texture2D(width, height);
 
         Color[] pixelColors = new Color[width * height];
+
         for (int z = 0; z < height; z++) {
             for (int x = 0; x < width; x++) {
                 pixelColors[z * width + x] = Color.Lerp(Color.black, Color.white, noiseMap[x, z]);

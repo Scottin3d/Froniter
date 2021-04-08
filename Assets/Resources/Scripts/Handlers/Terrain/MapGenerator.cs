@@ -14,12 +14,10 @@ public class MapGenerator : MonoBehaviour {
     [Header("Heightmap Properties")]
     public bool useHeightmap = false;
     public Texture2D heightmap;
-    public bool useRiverCurve = false;
-    public AnimationCurve riverCurve;
 
     [Header("Noise Properties")]
-    [Range(0.5f, 100f)]
-    public float noiseScale = 0.3f;
+    [Range(0.5f, 1000f)]
+    public float noiseScale = 10f;
     [Range(1, 8)]
     public int octaves = 4;
     [Range(0f, 1f)]
@@ -34,7 +32,7 @@ public class MapGenerator : MonoBehaviour {
     public TerrainType[] regions;
 
     [Header("Mesh Properties")]
-    [Range(1f, 1000f)]
+    [Range(1f, 100f)]
     public float meshHeight = 1f;
     public AnimationCurve meshHieghtCurve;
     //private float[,] noiseMap;
@@ -42,7 +40,7 @@ public class MapGenerator : MonoBehaviour {
     public const int mapChunkSize = 241;
     [Range(0,6)]
     public int editorPreviewLOD;
-
+    public NormalizeMode normalizeMode;
     // thread queues
     Queue<MapThreadingInfo<MapData>> mapDataThreadInfoQueue = new Queue<MapThreadingInfo<MapData>>();
     Queue<MapThreadingInfo<MeshData>> meshDataThreadInfoQueue = new Queue<MapThreadingInfo<MeshData>>();
@@ -103,15 +101,16 @@ public class MapGenerator : MonoBehaviour {
     private MapData GenerateMapData(Vector2 center) {
         // use hegihtmap
         float[,] noiseMap;
+        //NoiseMap[,] nMap;
         if (useHeightmap && heightmap != null) {
-            if (useRiverCurve) {
-                noiseMap = Noise.GenerateNoiseMapFromHeightmapWithCurve(heightmap, riverCurve);
-            } else { 
-                noiseMap = Noise.GenerateNoiseMapFromHeightmap(heightmap);
-            }
+            // chunk map
+            // chunks are same size as generated, 241
+            //int numberOfChunksX = (heightmap.width / 241) + 1;
+            noiseMap = Noise.GenerateNoiseMapFromHeightmap(heightmap);
+             
             // use noise map
         } else {
-            noiseMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, seed, noiseScale, octaves, persistence, lacunarity, center + offset);
+            noiseMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, seed, noiseScale, octaves, persistence, lacunarity, center + offset, normalizeMode);
         }
 
         Color[] colorMap = new Color[mapChunkSize * mapChunkSize];
@@ -120,8 +119,9 @@ public class MapGenerator : MonoBehaviour {
                 float currHeight = noiseMap[x, z];
 
                 for (int i = 0; i < regions.Length; i++) {
-                    if (currHeight <= regions[i].height) {
+                    if (currHeight >= regions[i].height) {
                         colorMap[z * mapChunkSize + x] = regions[i].color;
+                    } else {
                         break;
                     }
                 }
@@ -142,10 +142,26 @@ public class MapGenerator : MonoBehaviour {
                 display.DrawTexture(TextureGenerator.TextureFromColorMap(mapData.colorMap, mapChunkSize, mapChunkSize));
                 return;
             case DrawMode.Mesh:
-                int width = (useHeightmap && heightmap != null) ? heightmap.width : mapChunkSize;
-                int height = (useHeightmap && heightmap != null) ? heightmap.height : mapChunkSize;
+                if (useHeightmap && heightmap) {
+                    /*
+                    Texture2D[,] heightmapChunks;
+                    int heightmapChunksX = (heightmap.width / 241 ) +1;
+                    int heightmapChunksZ = (heightmap.height / 241) + 1;
+                    
+                    for (int z = 0; z < heightmapChunksZ; z++) {
+                        for (int x = 0; x < heightmapChunksX; x++) {
 
-                display.DrawMesh(MeshGenerator.GenerateTerrainMesh(mapData.heightmap, meshHeight, meshHieghtCurve, editorPreviewLOD), TextureGenerator.TextureFromColorMap(mapData.colorMap, width, height));
+                            heightmapChunks[x, z] = TextureGenerator.TextureFromColorMap(mapData.colorMap, mapChunkSize, mapChunkSize);
+                        }
+                    }
+                    */
+                } else {
+                    int width = (useHeightmap && heightmap != null) ? heightmap.width : mapChunkSize;
+                    int height = (useHeightmap && heightmap != null) ? heightmap.height : mapChunkSize;
+                    display.DrawMesh(MeshGenerator.GenerateTerrainMesh(mapData.heightmap, meshHeight, meshHieghtCurve, editorPreviewLOD), 
+                                     TextureGenerator.TextureFromColorMap(mapData.colorMap, width, height));
+                }
+                    
                 return;
         }
     }
@@ -175,6 +191,11 @@ public struct TerrainType {
     public string name;
     public float height;
     public Color color;
+}
+
+[System.Serializable]
+public struct NoiseMap {
+    public float[,] heightValues;
 }
 
 [System.Serializable]
