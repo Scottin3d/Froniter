@@ -10,6 +10,8 @@ public enum DrawMode {
     Mesh
 }
 public class MapGenerator : MonoBehaviour {
+    public static MapGenerator current;
+
     public bool autoGenerate = true;
     [Header("Heightmap Properties")]
     public bool useHeightmap = false;
@@ -46,6 +48,10 @@ public class MapGenerator : MonoBehaviour {
     Queue<MapThreadingInfo<MeshData>> meshDataThreadInfoQueue = new Queue<MapThreadingInfo<MeshData>>();
 
     #region Mono Functions
+    private void Awake() {
+        current = this;
+    }
+
     private void Update() {
         if (mapDataThreadInfoQueue.Count > 0) {
             for (int i = 0; i < mapDataThreadInfoQueue.Count; i++) {
@@ -96,7 +102,27 @@ public class MapGenerator : MonoBehaviour {
     }
     #endregion
 
-    
+    public MapData GenerateMapData(Vector2 center, Texture2D heightmap) {
+        // use hegihtmap
+        float[,] noiseMap = Noise.GenerateNoiseMapFromHeightmap(heightmap);
+        int mapSize = heightmap.width;
+
+        Color[] colorMap = new Color[mapSize * mapSize];
+        for (int z = 0; z < mapSize; z++) {
+            for (int x = 0; x < mapSize; x++) {
+                float currHeight = noiseMap[x, z];
+
+                for (int i = 0; i < regions.Length; i++) {
+                    if (currHeight >= regions[i].height) {
+                        colorMap[z * mapSize + x] = regions[i].color;
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
+        return new MapData(noiseMap, colorMap);
+    }
 
     private MapData GenerateMapData(Vector2 center) {
         // use hegihtmap
@@ -206,6 +232,10 @@ public struct MapData {
     public MapData(float[,] heightmap, Color[] colorMap) {
         this.heightmap = heightmap;
         this.colorMap = colorMap;
+    }
+
+    public void UpdateMapDate(int[] pixelIndex) { 
+        
     }
 }
 #endregion

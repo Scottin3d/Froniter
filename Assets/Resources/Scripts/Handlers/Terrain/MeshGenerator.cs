@@ -38,6 +38,47 @@ public static class MeshGenerator {
 
         return meshData;
     }
+
+    public static MeshData GenerateTerrainMesh(float[,] heightmap, float heightMulitplier, AnimationCurve meshHieghtCurve, float scale, int levelOfDetail, float[,] noiseMap) {
+        AnimationCurve heightCurve = new AnimationCurve(meshHieghtCurve.keys);
+        int width = heightmap.GetLength(0);
+        int height = heightmap.GetLength(1);
+        
+        float topLeftX = (scale - 1) / -2f;
+        float topLeftZ = (scale - 1) / 2f;
+
+        int meshSimplificationIncrement = (levelOfDetail == 0) ? 1 : levelOfDetail * 2;
+        int verticesPerLine = (width - 1) / meshSimplificationIncrement + 1;
+        float meshStep = scale / width;
+
+        MeshData meshData = new MeshData(verticesPerLine, verticesPerLine);
+        int vertexIndex = 0;
+
+        for (int z = 0; z < height; z += meshSimplificationIncrement) {
+            for (int x = 0; x < width; x += meshSimplificationIncrement) {
+
+                float xVal = topLeftX + (x * meshStep);
+                float yVal = heightCurve.Evaluate(heightmap[x, z]) * heightMulitplier;
+                float zVal = topLeftZ - (z * meshStep);
+
+                meshData.vertices[vertexIndex] = new Vector3(xVal, yVal, zVal);
+                //meshData.vertices[vertexIndex] = new Vector3(x/ scale, heightCurve.Evaluate(heightmap[x, z]) * heightMulitplier, z / scale);
+                meshData.uv[vertexIndex] = new Vector2(x / (float)width, z / (float)height);
+
+                if (x < width - 1 && z < height - 1) {
+                    meshData.AddTriangle(vertexIndex,
+                                         vertexIndex + verticesPerLine + 1,
+                                         vertexIndex + verticesPerLine);
+                    meshData.AddTriangle(vertexIndex + verticesPerLine + 1,
+                                         vertexIndex,
+                                         vertexIndex + 1);
+                }
+                vertexIndex++;
+            }
+        }
+
+        return meshData;
+    }
 }
 
 public class MeshData {
