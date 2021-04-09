@@ -153,9 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   material: {fileID: 2100000, guid: 81ce4e8724150744896232d108419fca, type: 2}
-  autoGenerate: 1
   heightmap: {fileID: 2800000, guid: 33dc569fa03db234399b7357a15e6db6, type: 3}
-  heightMapChunks: 2
   mapSize: 100
   noiseScale: 62.3
   octaves: 8
