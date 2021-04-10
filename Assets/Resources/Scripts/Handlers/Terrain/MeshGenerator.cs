@@ -39,30 +39,33 @@ public static class MeshGenerator {
         return meshData;
     }
 
-    public static MeshData GenerateTerrainMesh(float[,] heightmap, float heightMulitplier, AnimationCurve meshHieghtCurve, float scale, int levelOfDetail, float[,] noiseMap) {
+    public static MeshData GenerateTerrainMesh(float[,] heightmap, float heightMulitplier, AnimationCurve meshHieghtCurve, float chunkSize, int levelOfDetail, Vector2 center) {
         AnimationCurve heightCurve = new AnimationCurve(meshHieghtCurve.keys);
         int width = heightmap.GetLength(0);
         int height = heightmap.GetLength(1);
-        
-        float topLeftX = (scale - 1) / -2f;
-        float topLeftZ = (scale - 1) / 2f;
 
         int meshSimplificationIncrement = (levelOfDetail == 0) ? 1 : levelOfDetail * 2;
         int verticesPerLine = (width - 1) / meshSimplificationIncrement + 1;
-        float meshStep = scale / width;
+
+        float meshStep = chunkSize / (width - 1);
+        float topLeftX = center.x - (chunkSize / 2f);
+        float topLeftZ = center.y + (chunkSize / 2f);
 
         MeshData meshData = new MeshData(verticesPerLine, verticesPerLine);
         int vertexIndex = 0;
 
         for (int z = 0; z < height; z += meshSimplificationIncrement) {
             for (int x = 0; x < width; x += meshSimplificationIncrement) {
+                
+                Vector2 quadCenter = new Vector2(topLeftX + (x * meshStep), topLeftZ - (z * meshStep));
 
-                float xVal = topLeftX + (x * meshStep);
+                //float xVal = topLeftX + (x * meshStep);
+                float xVal = quadCenter.x;
                 float yVal = heightCurve.Evaluate(heightmap[x, z]) * heightMulitplier;
-                float zVal = topLeftZ - (z * meshStep);
+                //float zVal = topLeftZ - (z * meshStep);
+                float zVal = quadCenter.y;
 
                 meshData.vertices[vertexIndex] = new Vector3(xVal, yVal, zVal);
-                //meshData.vertices[vertexIndex] = new Vector3(x/ scale, heightCurve.Evaluate(heightmap[x, z]) * heightMulitplier, z / scale);
                 meshData.uv[vertexIndex] = new Vector2(x / (float)width, z / (float)height);
 
                 if (x < width - 1 && z < height - 1) {

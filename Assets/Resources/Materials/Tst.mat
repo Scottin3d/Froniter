@@ -109,22 +109,22 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - Vector1_1D4EF44: 15
-    - Vector1_3001CBD6: 100
-    - Vector1_4583ED18: 0.786
+    - Vector1_3001CBD6: 4.6
+    - Vector1_4583ED18: 1
     - Vector1_50588F8D: 35
     - Vector1_51EB1631: 0.065
-    - Vector1_52443495: 1
-    - Vector1_53E8CE85: 15
-    - Vector1_5E51FD60: 0.5
-    - Vector1_60D75434: 31
+    - Vector1_52443495: 0.94
+    - Vector1_53E8CE85: 3.47
+    - Vector1_5E51FD60: 1
+    - Vector1_60D75434: 2.76
     - Vector1_6836D3: 25
-    - Vector1_6A7C6C52: 44
+    - Vector1_6A7C6C52: 4.42
     - Vector1_6E61646D: 35
     - Vector1_6E8B8532: 15
-    - Vector1_88771533: 3.5
+    - Vector1_88771533: 1.52
     - Vector1_8B647964: 1
     - Vector1_B9849F89: 11.8
-    - Vector1_DE945A56: 7
+    - Vector1_DE945A56: 47.61
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1

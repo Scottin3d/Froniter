@@ -104,7 +104,7 @@ public class MapGenerator : MonoBehaviour {
 
     public MapData GenerateMapData(Vector2 center, Texture2D heightmap) {
         // use hegihtmap
-        float[,] noiseMap = Noise.GenerateNoiseMapFromHeightmap(heightmap);
+        float[,] noiseMap = Noise.GenerateNoiseMapFromHeightmap(heightmap, meshHeight, normalizeMode);
         int mapSize = heightmap.width;
 
         Color[] colorMap = new Color[mapSize * mapSize];
@@ -132,7 +132,7 @@ public class MapGenerator : MonoBehaviour {
             // chunk map
             // chunks are same size as generated, 241
             //int numberOfChunksX = (heightmap.width / 241) + 1;
-            noiseMap = Noise.GenerateNoiseMapFromHeightmap(heightmap);
+            noiseMap = Noise.GenerateNoiseMapFromHeightmap(heightmap, meshHeight, normalizeMode);
              
             // use noise map
         } else {

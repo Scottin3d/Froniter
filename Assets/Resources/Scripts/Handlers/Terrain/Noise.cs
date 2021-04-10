@@ -77,7 +77,40 @@ public static class Noise {
         return noiseMap;
     }
 
-    public static float[,] GenerateNoiseMapFromHeightmap(Texture2D heightmap) {
+    public static float[,] NormalizeEdges(float[,] noiseMap, NormalizeMode normalizeMode) {
+        int mapWidth = noiseMap.GetLength(0);
+        int mapHeight = noiseMap.GetLength(1);
+
+        // for normalization
+        float maxLocalNoiseHeight = float.MinValue;
+        float minLocalNoiseHeight = float.MaxValue;
+
+        for (int z = 0; z < mapHeight; z++) {
+            for (int x = 0; x < mapWidth; x++) {
+
+                maxLocalNoiseHeight = (maxLocalNoiseHeight < noiseMap[x,z]) ? noiseMap[x, z] : maxLocalNoiseHeight;
+                minLocalNoiseHeight = (minLocalNoiseHeight > noiseMap[x, z]) ? noiseMap[x, z] : minLocalNoiseHeight;
+            }
+        }
+        for (int z = 0; z < mapHeight; z++) {
+            for (int x = 0; x < mapWidth; x++) {
+                if (normalizeMode == NormalizeMode.Local) {
+                    noiseMap[x, z] = Mathf.InverseLerp(minLocalNoiseHeight, maxLocalNoiseHeight, noiseMap[x, z]);
+                } else {
+                    float normalizedHeight = (noiseMap[x, z] + 1) / (2f * maxLocalNoiseHeight / 0.3f);
+                    noiseMap[x, z] = Mathf.Clamp(normalizedHeight, 0, int.MaxValue);
+                }
+            }
+        }
+        return noiseMap;
+    }
+
+    public static float[,] GenerateNoiseMapFromHeightmap(Texture2D heightmap, float meshHeight, NormalizeMode normalizeMode) {
+        // for normalization
+        float maxLocalNoiseHeight = float.MinValue;
+        float minLocalNoiseHeight = float.MaxValue;
+
+
         int width = heightmap.width;
         int height = heightmap.height;
         float[,] noiseMap = new float[width, height];
@@ -86,9 +119,28 @@ public static class Noise {
         pixelColors = heightmap.GetPixels();
         for (int z = 0; z < height; z++) {
             for (int x = 0; x < width; x++) {
-                noiseMap[x, z] = pixelColors[z * width + x].grayscale;
+                float pixel = pixelColors[z * width + x].grayscale;
+
+                maxLocalNoiseHeight = (maxLocalNoiseHeight < pixel) ? pixel : maxLocalNoiseHeight;
+                minLocalNoiseHeight = (minLocalNoiseHeight > pixel) ? pixel : minLocalNoiseHeight;
+
+                noiseMap[x, z] = pixel;
             }
         }
+        
+        /*
+        for (int z = 0; z < height; z++) {
+            for (int x = 0; x < width; x++) {
+                if (normalizeMode == NormalizeMode.Local) {
+                    noiseMap[x, z] = Mathf.InverseLerp(minLocalNoiseHeight, maxLocalNoiseHeight, noiseMap[x, z]);
+                } else {
+                    float normalizedHeight = (noiseMap[x, z] + 1) / (meshHeight / 5f);
+                    noiseMap[x, z] = Mathf.Clamp(normalizedHeight, 0, int.MaxValue);
+                }
+            }
+        }
+        */
+        //return NormalizeEdges(noiseMap, NormalizeMode.Global);
         return noiseMap;
     }
 
