@@ -128,18 +128,18 @@ public static class Noise {
             }
         }
         
-        /*
+        
         for (int z = 0; z < height; z++) {
             for (int x = 0; x < width; x++) {
                 if (normalizeMode == NormalizeMode.Local) {
                     noiseMap[x, z] = Mathf.InverseLerp(minLocalNoiseHeight, maxLocalNoiseHeight, noiseMap[x, z]);
                 } else {
-                    float normalizedHeight = (noiseMap[x, z] + 1) / (meshHeight / 5f);
+                    float normalizedHeight = (noiseMap[x, z] + 1) / (meshHeight / 4f);
                     noiseMap[x, z] = Mathf.Clamp(normalizedHeight, 0, int.MaxValue);
                 }
             }
         }
-        */
+        
         //return NormalizeEdges(noiseMap, NormalizeMode.Global);
         return noiseMap;
     }

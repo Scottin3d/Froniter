@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class GenerateMapFromHeightMap : MonoBehaviour {
+    public List<Vector2> centers = new List<Vector2>();
     public Material material = null;
 
     [Header("Heightmap Properties")]
@@ -34,7 +35,7 @@ public class GenerateMapFromHeightMap : MonoBehaviour {
     public Vector2 offset = new Vector2(0, 0);
 
     [Header("Mesh Properties")]
-    [Range(1f, 100f)]
+    [Range(0f, 100f)]
     public float meshHeight = 1f;
     public AnimationCurve meshHieghtCurve;
     public const int mapChunkSize = 241;
@@ -66,6 +67,9 @@ public class GenerateMapFromHeightMap : MonoBehaviour {
         float mapTopLeftX = mapSize / -2f;       // top left corner of map for offset
         float mapTopLeftZ = mapSize / 2f;
 
+        float mapLowerLeftX = mapSize / -2f;
+        float mapLowerLeftZ = mapSize / -2f;
+
         
 
         //heightmapChunks = new Texture2D[heightMapChunks, heightMapChunks];
@@ -76,14 +80,17 @@ public class GenerateMapFromHeightMap : MonoBehaviour {
         for (int z = 0; z < numberOfChunks; z++) {
             for (int x = 0; x < numberOfChunks; x++) {
                 float halfChunk = chunkSize / 2f;
-                Vector2 chunkCenter = new Vector2(mapTopLeftX + (x  * chunkSize) + halfChunk, mapTopLeftZ - (z * chunkSize) - halfChunk);
-
+                Vector2 chunkCenter = new Vector2(mapLowerLeftX + (x  * chunkSize) + halfChunk, mapLowerLeftZ + (z * chunkSize) - halfChunk);
+                centers.Add(chunkCenter);
                 // generate heightmap chunk
-                Texture2D _heightmap = GetPixelTest((mapWidth / numberOfChunks) * x, (mapHeight / numberOfChunks) * z);
+                Texture2D _heightmap = GetPixelTest((mapWidth / numberOfChunks) * x,
+                                                    (mapHeight / numberOfChunks) * z,
+                                                    mapWidth / numberOfChunks);
                 // generate map data
                 MapData _mapData = GenerateMapData(chunkCenter, _heightmap);
 
                 // generate mesh data
+                // errors most likely steming from here
                 MeshData _meshData = MeshGenerator.GenerateTerrainMesh(_mapData.heightmap, meshHeight, meshHieghtCurve, chunkSize, editorPreviewLOD, chunkCenter);
 
                 // create chunk
@@ -91,12 +98,15 @@ public class GenerateMapFromHeightMap : MonoBehaviour {
                 // create chunk mesh
                 Mesh mesh = mapChunks[x, z].meshData.CreateMesh();
                 //mesh = mattatz.MeshSmoothingSystem.MeshSmoothing.LaplacianFilter(mesh, 2);
-                mesh = mattatz.MeshSmoothingSystem.MeshSmoothing.HCFilter(mesh, 10);
+                //mesh = mattatz.MeshSmoothingSystem.MeshSmoothing.HCFilter(mesh, 10);
                 // create game object
                 GameObject chunk = GameObject.CreatePrimitive(PrimitiveType.Plane);
                 chunk.transform.parent = transform;
                 chunk.name = "chunk" + z + x;
-                //chunk.transform.position = new Vector3(chunkCenter.x, 0f, chunkCenter.y);
+                //Quaternion rotation = Quaternion.identity;
+                //rotation.eulerAngles = new Vector3(0f, 180f, 0f);
+                //chunk.transform.localRotation = rotation;
+                chunk.transform.position = new Vector3(chunkCenter.x, 0f, chunkCenter.y);
                 chunk.GetComponent<MeshFilter>().sharedMesh = mesh;
                 chunk.GetComponent<MeshCollider>().sharedMesh = mesh;
                 chunk.GetComponent<MeshRenderer>().sharedMaterial = Instantiate(material);
@@ -106,12 +116,12 @@ public class GenerateMapFromHeightMap : MonoBehaviour {
         }
     }
 
-    public Texture2D GetPixelTest(int width, int height) {
+    public Texture2D GetPixelTest(int width, int height, int size) {
         int mapWidth = heightmap.width;
         int mapHeight = heightmap.height;
-        Color[] pixelColors = new Color[(mapWidth / numberOfChunks) * (mapHeight / numberOfChunks)];
-        pixelColors = heightmap.GetPixels(width, height, mapWidth / numberOfChunks, mapHeight / numberOfChunks);
-        return TextureGenerator.TextureFromColorMap(pixelColors, mapWidth / numberOfChunks, mapWidth / numberOfChunks);
+        Color[] pixelColors = new Color[size * size];
+        pixelColors = heightmap.GetPixels(width, height, size, size);
+        return TextureGenerator.TextureFromColorMap(pixelColors, size, size);
 
     }
 

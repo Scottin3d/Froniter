@@ -51,13 +51,16 @@ public static class MeshGenerator {
         float topLeftX = center.x - (chunkSize / 2f);
         float topLeftZ = center.y + (chunkSize / 2f);
 
+        float lowerLeftX = chunkSize / -2f;
+        float lowerLeftZ = chunkSize / -2f;
+
         MeshData meshData = new MeshData(verticesPerLine, verticesPerLine);
         int vertexIndex = 0;
 
         for (int z = 0; z < height; z += meshSimplificationIncrement) {
             for (int x = 0; x < width; x += meshSimplificationIncrement) {
                 
-                Vector2 quadCenter = new Vector2(topLeftX + (x * meshStep), topLeftZ - (z * meshStep));
+                Vector2 quadCenter = new Vector2(lowerLeftX + (x * meshStep), lowerLeftZ + (z * meshStep));
 
                 //float xVal = topLeftX + (x * meshStep);
                 float xVal = quadCenter.x;
@@ -68,12 +71,24 @@ public static class MeshGenerator {
                 meshData.vertices[vertexIndex] = new Vector3(xVal, yVal, zVal);
                 meshData.uv[vertexIndex] = new Vector2(x / (float)width, z / (float)height);
 
+
+                
                 if (x < width - 1 && z < height - 1) {
+                    // top to bottom
+                    /*
                     meshData.AddTriangle(vertexIndex,
                                          vertexIndex + verticesPerLine + 1,
                                          vertexIndex + verticesPerLine);
                     meshData.AddTriangle(vertexIndex + verticesPerLine + 1,
                                          vertexIndex,
+                                         vertexIndex + 1);
+                    */
+                    // bottom to top
+                    meshData.AddTriangle(vertexIndex,
+                                         vertexIndex + verticesPerLine,
+                                          vertexIndex + 1);
+                    meshData.AddTriangle(vertexIndex + verticesPerLine,
+                                         vertexIndex + verticesPerLine + 1,
                                          vertexIndex + 1);
                 }
                 vertexIndex++;

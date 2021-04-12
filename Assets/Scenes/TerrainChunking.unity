@@ -152,16 +152,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa922fd2f735dd244bd04fc82a524a0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  material: {fileID: 2100000, guid: 2c1dbf1af5a6c574bbc36c9694e6a0e4, type: 2}
+  centers: []
+  material: {fileID: 2100000, guid: 81ce4e8724150744896232d108419fca, type: 2}
   heightmap: {fileID: 2800000, guid: 33dc569fa03db234399b7357a15e6db6, type: 3}
-  mapSize: 50
+  mapSize: 100
   noiseScale: 62.3
   octaves: 8
   persistence: 1
   lacunarity: 3.73
   seed: 0
   offset: {x: 0, y: 0}
-  meshHeight: 2
+  meshHeight: 10
   meshHieghtCurve:
     serializedVersion: 2
     m_Curve:
@@ -308,13 +309,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 641630866}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -150, y: 0, z: -50}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: -150, y: 1.39, z: 0}
   m_LocalScale: {x: 10, y: 1, z: 10}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1 &1145915006
 GameObject:
   m_ObjectHideFlags: 0
@@ -496,6 +497,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 19e9125ab4431114aa3e786e065f00ec, type: 3}
       propertyPath: m_Name
       value: f
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 19e9125ab4431114aa3e786e065f00ec, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 19e9125ab4431114aa3e786e065f00ec, type: 3}
