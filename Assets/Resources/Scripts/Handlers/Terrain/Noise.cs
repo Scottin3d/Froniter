@@ -128,7 +128,7 @@ public static class Noise {
             }
         }
         
-        
+        /*
         for (int z = 0; z < height; z++) {
             for (int x = 0; x < width; x++) {
                 if (normalizeMode == NormalizeMode.Local) {
@@ -139,7 +139,7 @@ public static class Noise {
                 }
             }
         }
-        
+        */
         //return NormalizeEdges(noiseMap, NormalizeMode.Global);
         return noiseMap;
     }
