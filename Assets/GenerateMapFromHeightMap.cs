@@ -20,8 +20,9 @@ public class GenerateMapFromHeightMap : MonoBehaviour {
     [Header("Mesh Properties")]
     [Tooltip("This material will be instances on each chunk.")]
     public Material material = null;
+    public bool useDefaultMeshHeight = true;
     [Range(0f, 100f)]
-    private float meshHeight;
+    public float meshHeight = 1f;
     public AnimationCurve meshHieghtCurve = new AnimationCurve(new Keyframe(0, 0), new Keyframe(1, 1));
     public const int mapChunkSize = 241;
     //[Range(0, 6)]
@@ -56,8 +57,12 @@ public class GenerateMapFromHeightMap : MonoBehaviour {
         numberOfChunks = heightmap.width / chunkResolution;
         chunkSize = mapSize / numberOfChunks;
         chunkSize = (chunkSize > 0) ? chunkSize : 1;
-        meshHeight = mapSize / 10;
-        meshHeight = (meshHeight > 0) ? meshHeight : 0.1f;
+
+        if (useDefaultMeshHeight) {
+            meshHeight = mapSize / 10;
+            meshHeight = (meshHeight > 0) ? meshHeight : 0.1f;
+        }
+        
     }
 
     /// <summary>
