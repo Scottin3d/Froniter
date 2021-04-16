@@ -39,8 +39,12 @@ public static class MeshGenerator {
         return meshData;
     }
 
-    public static MeshData GenerateTerrainMesh(float[,] heightmap, float heightMulitplier, AnimationCurve meshHieghtCurve, float chunkSize, int levelOfDetail, Vector2 center) {
+    public static MeshData GenerateTerrainMesh(MapChunk mapChunk, float heightMulitplier, AnimationCurve meshHieghtCurve, float chunkSize, int levelOfDetail) {
+        float[,] heightmap = mapChunk.noiseMap;
+        Vector2 center = mapChunk.center;
         AnimationCurve heightCurve = new AnimationCurve(meshHieghtCurve.keys);
+
+
         int width = heightmap.GetLength(0);
         int height = heightmap.GetLength(1);
 
